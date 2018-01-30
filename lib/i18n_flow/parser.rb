@@ -17,7 +17,7 @@ class I18nFlow::Parser
     @builder.root
   end
 
-  def tree(include_scalar:)
-    I18nFlow::Tree.new(root, include_scalar: include_scalar).tree.first
+  def tree
+    I18nFlow::Tree.new(root).tree
   end
 end

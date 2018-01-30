@@ -1,9 +1,6 @@
 require 'psych'
-require_relative 'node_inspector'
 
 class I18nFlow::Node
-  include I18nFlow::NodeInspector
-
   TAG_TODO   = '!todo'
   TAG_IGNORE = '!ignore'
   TAG_ONLY   = /^!only:([\w-]+)$/
@@ -12,12 +9,14 @@ class I18nFlow::Node
   attr_accessor :end_line
   attr_reader :scope
   attr_reader :only
+  attr_reader :value
 
-  def initialize(o, scope:)
+  def initialize(o, scope:, value: nil)
     @start_line = o.start_line + 1
-    @end_line = o.end_line
-    @anchor = o.anchor
-    @scope = scope
+    @end_line   = o.end_line
+    @anchor     = o.anchor
+    @value      = value
+    @scope      = scope
 
     parse_tag!(o.tag)
   end
@@ -35,8 +34,16 @@ class I18nFlow::Node
     scope.size
   end
 
-  def children
-    @children ||= []
+  def key
+    scope.last
+  end
+
+  def full_key
+    scope.join('.')
+  end
+
+  def hash
+    @hash ||= {}
   end
 
   def todo?
@@ -45,6 +52,10 @@ class I18nFlow::Node
 
   def ignored?
     @tag == :ignore
+  end
+
+  def has_value?
+    !value.nil?
   end
 
 private
