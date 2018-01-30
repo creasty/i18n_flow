@@ -7,22 +7,29 @@ class I18nFlow::Node
 
   attr_accessor :start_line
   attr_accessor :end_line
-  attr_reader :scope
-  attr_reader :only
   attr_reader :value
+  attr_reader :anchor
+  attr_reader :only
 
-  def initialize(o, scope:, value: nil)
-    @start_line = o.start_line + 1
-    @end_line   = o.end_line
-    @anchor     = o.anchor
-    @value      = value
+  def initialize(
+    scope:,
+    value: nil,
+    start_line: nil,
+    end_line: nil,
+    anchor: nil,
+    tag: nil
+  )
     @scope      = scope
+    @value      = value
+    @start_line = start_line
+    @end_line   = end_line
+    @anchor     = anchor
 
-    parse_tag!(o.tag)
+    parse_tag!(tag)
   end
 
   def has_anchor?
-    !!@anchor
+    !!anchor
   end
 
   def num_lines
@@ -31,15 +38,19 @@ class I18nFlow::Node
   end
 
   def level
-    scope.size
+    @scope.size
   end
 
   def key
-    scope.last
+    @scope.last
+  end
+
+  def locale
+    @scope.first
   end
 
   def full_key
-    scope.join('.')
+    @scope.join('.')
   end
 
   def hash
@@ -54,14 +65,19 @@ class I18nFlow::Node
     @tag == :ignore
   end
 
-  def has_value?
+  def value?
     !value.nil?
+  end
+
+  def has_only?
+    !only.nil?
   end
 
 private
 
   def parse_tag!(tag)
     return unless tag
+
     case tag
     when TAG_TODO
       @tag = :todo

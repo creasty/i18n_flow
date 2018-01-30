@@ -22,12 +22,22 @@ private
         visit(c, scope: scope, hash: hash)
       end
     when ::Psych::Nodes::Scalar
-      node = I18nFlow::Node.new(o, scope: scope, value: o.value)
+      node = I18nFlow::Node.new(
+        scope: scope,
+        value: o.value,
+        start_line: o.start_line + 1,
+        end_line: o.end_line,
+        anchor: o.anchor,
+      )
       hash[node.key] = node
-    when ::Psych::Nodes::Alias
     when ::Psych::Nodes::Sequence
       if scope.any?
-        node = I18nFlow::Node.new(o, scope: scope)
+        node = I18nFlow::Node.new(
+          scope: scope,
+          start_line: o.start_line + 1,
+          end_line: o.end_line,
+          anchor: o.anchor,
+        )
         hash[node.key] = node
         hash = node.hash
       end
@@ -35,9 +45,14 @@ private
       o.children.each_with_index do |c, i|
         visit(c, scope: [*scope, '$%d' % [i]], hash: hash)
       end
-    when ::Psych::Nodes::Mapping
+    when ::Psych::Nodes::Alias, ::Psych::Nodes::Mapping
       if scope.any?
-        node = I18nFlow::Node.new(o, scope: scope)
+        node = I18nFlow::Node.new(
+          scope: scope,
+          start_line: o.start_line + 1,
+          end_line: o.end_line,
+          anchor: o.anchor,
+        )
         hash[node.key] = node
         hash = node.hash
       end

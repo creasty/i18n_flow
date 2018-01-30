@@ -29,25 +29,20 @@ private
 
   def inspect_anchor(node)
     return unless node.has_anchor?
-    '&%s' % [node.instance_variable_get(:@anchor)]
+    '&%s' % [node.anchor]
   end
 
   def inspect_line(node)
-    if node.end_line
+    if node.end_line && node.start_line
       '%d-%d (%d)' % [node.start_line, node.end_line, node.num_lines]
-    else
+    elsif node.start_line
       '%d' % [node.start_line]
     end
   end
 
   def inspect_tag(node)
-    case node.instance_variable_get(:@tag)
-    when :todo
-      'TODO'
-    when :ignore
-      'IGNORED'
-    when :only
-      'ONLY:%s' % [node.instance_variable_get(:@only)]
-    end
+    return 'TOOD' if node.todo?
+    return 'IGNORED' if node.ignored?
+    return 'ONLY:%s' % [node.only] if node.only
   end
 end
