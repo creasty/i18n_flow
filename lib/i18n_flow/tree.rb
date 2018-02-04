@@ -23,20 +23,22 @@ private
       end
     when ::Psych::Nodes::Scalar
       node = I18nFlow::Node.new(
-        scope: scope,
-        value: o.value,
+        scope:      scope,
+        value:      o.value,
         start_line: o.start_line + 1,
-        end_line: o.end_line,
-        anchor: o.anchor,
+        end_line:   o.end_line,
+        anchor:     o.anchor,
+        tag:        o.tag,
       )
       hash[node.key] = node
     when ::Psych::Nodes::Sequence
       if scope.any?
         node = I18nFlow::Node.new(
-          scope: scope,
+          scope:      scope,
           start_line: o.start_line + 1,
-          end_line: o.end_line,
-          anchor: o.anchor,
+          end_line:   o.end_line,
+          anchor:     o.anchor,
+          tag:        o.tag,
         )
         hash[node.key] = node
         hash = node.hash
@@ -48,10 +50,11 @@ private
     when ::Psych::Nodes::Alias, ::Psych::Nodes::Mapping
       if scope.any?
         node = I18nFlow::Node.new(
-          scope: scope,
+          scope:      scope,
           start_line: o.start_line + 1,
-          end_line: o.end_line,
-          anchor: o.anchor,
+          end_line:   o.end_line,
+          anchor:     o.anchor,
+          tag:        o.tag,
         )
         hash[node.key] = node
         hash = node.hash
