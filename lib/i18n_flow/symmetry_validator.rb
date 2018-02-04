@@ -21,7 +21,17 @@ private
   end
 
   def validate_node(n1, n2)
-    return if n2&.ignored?
+    return if n1&.ignored? || n2&.ignored?
+
+    check_only_tag(n1, n2)&.tap do |(key, err)|
+      errors[key] = err if err
+      return
+    end
+
+    check_only_tag(n2, n1)&.tap do |(key, err)|
+      errors[key] = err if err
+      return
+    end
 
     if n1 && n2
       if n1.value? != n2.value?
@@ -36,20 +46,26 @@ private
     end
 
     either = n1 || n2
-    return if either.ignored?
-
-    if either.has_only?
-      if either.only != either.locale
-        errors[either.full_key] = I18nFlow::InvalidLocaleError.new(
-          expect: either.only,
-          actual: either.locale,
-          tag:    :only,
-        )
-      end
-
-      return
-    end
-
     errors[either.full_key] = I18nFlow::AsymmetricKeyError.new
+  end
+
+  def check_only_tag(n1, n2)
+    return unless n1&.has_only?
+
+    if !n1.valid_locale?
+      [n1.full_key] << I18nFlow::InvalidLocaleError.new(
+        expect: n1.valid_locales,
+        actual: n1.locale,
+        tag:    :only,
+      )
+    elsif n2&.locale && !n1.valid_locales.include?(n2.locale)
+      [n2.full_key] << I18nFlow::InvalidLocaleError.new(
+        expect: n1.valid_locales,
+        actual: n2.locale,
+        tag:    :only,
+      )
+    else
+      [n1.full_key, nil]
+    end
   end
 end

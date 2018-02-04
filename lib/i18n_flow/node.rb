@@ -3,13 +3,13 @@ require 'psych'
 class I18nFlow::Node
   TAG_TODO   = '!todo'
   TAG_IGNORE = '!ignore'
-  TAG_ONLY   = /^!only:([\w-]+)$/
+  TAG_ONLY   = /^!only:([,a-zA-Z_-]+)$/
 
   attr_accessor :start_line
   attr_accessor :end_line
   attr_reader :value
   attr_reader :anchor
-  attr_reader :only
+  attr_reader :valid_locales
 
   def initialize(
     scope:,
@@ -25,11 +25,9 @@ class I18nFlow::Node
     @end_line   = end_line
     @anchor     = anchor
 
-    parse_tag!(tag)
-  end
+    @valid_locales = []
 
-  def has_anchor?
-    !!anchor
+    parse_tag!(tag)
   end
 
   def num_lines
@@ -57,6 +55,14 @@ class I18nFlow::Node
     @hash ||= {}
   end
 
+  def value?
+    !value.nil?
+  end
+
+  def has_anchor?
+    !!anchor
+  end
+
   def todo?
     @tag == :todo
   end
@@ -65,12 +71,12 @@ class I18nFlow::Node
     @tag == :ignore
   end
 
-  def value?
-    !value.nil?
+  def has_only?
+    @tag == :only && @valid_locales.any?
   end
 
-  def has_only?
-    !only.nil?
+  def valid_locale?
+    !has_only? || @valid_locales.include?(locale)
   end
 
 private
@@ -83,7 +89,7 @@ private
       @tag = :todo
     when TAG_ONLY
       @tag = :only
-      @only = $1
+      @valid_locales = $1.split(',').freeze
     when TAG_IGNORE
       @tag = :ignore
     end
