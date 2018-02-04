@@ -1,3 +1,4 @@
+require 'i18n_flow/symmetry_validator'
 require 'i18n_flow/validation_error'
 
 describe I18nFlow::SymmetryValidator do

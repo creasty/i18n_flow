@@ -1,8 +1,7 @@
 require_relative 'validation_error'
+require_relative 'util'
 
 class I18nFlow::SymmetryValidator
-  ARGS_PATTERN = /(?<!%)%\{([^\}]+)\}/
-
   def validate(t1, t2)
     @errors = nil
     validate_hash(t1.hash, t2.hash)
@@ -87,8 +86,8 @@ private
   end
 
   def check_args(n1, n2)
-    args_1 = extract_args(n1.value)
-    args_2 = extract_args(n2.value)
+    args_1 = I18nFlow::Util.extract_args(n1.value)
+    args_2 = I18nFlow::Util.extract_args(n2.value)
 
     return if args_1 == args_2
 
@@ -96,9 +95,5 @@ private
       expect: args_1,
       actual: args_2,
     )
-  end
-
-  def extract_args(text)
-    text.to_s.scan(ARGS_PATTERN).flatten.sort
   end
 end
