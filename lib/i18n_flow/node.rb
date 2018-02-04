@@ -1,14 +1,15 @@
 require 'psych'
 
 class I18nFlow::Node
-  TAG_TODO   = '!todo'
   TAG_IGNORE = '!ignore'
+  TAG_TODO   = /^!todo(?::([,a-zA-Z_-]+))?$/
   TAG_ONLY   = /^!only:([,a-zA-Z_-]+)$/
 
   attr_accessor :start_line
   attr_accessor :end_line
   attr_reader :value
   attr_reader :anchor
+  attr_reader :todo_locales
   attr_reader :valid_locales
 
   def initialize(
@@ -25,6 +26,7 @@ class I18nFlow::Node
     @end_line   = end_line
     @anchor     = anchor
 
+    @todo_locales  = []
     @valid_locales = []
 
     parse_tag!(tag)
@@ -87,6 +89,7 @@ private
     case tag
     when TAG_TODO
       @tag = :todo
+      @todo_locales = $1.split(',').freeze
     when TAG_ONLY
       @tag = :only
       @valid_locales = $1.split(',').freeze

@@ -257,7 +257,7 @@ describe I18nFlow::SymmetryValidator do
         validator.validate(t1['en'], t2['ja'])
 
         expect(validator.errors).to eq({
-          'en.key_2' => I18nFlow::InvalidLocaleError.new(expect: ['ja'], actual: 'en', tag: :only),
+          'en.key_2' => I18nFlow::InvalidLocaleError.new(expect: ['ja'], actual: 'en'),
         })
       end
 
@@ -278,7 +278,7 @@ describe I18nFlow::SymmetryValidator do
         validator.validate(t1['en'], t2['ja'])
 
         expect(validator.errors).to eq({
-          'ja.key_3' => I18nFlow::InvalidLocaleError.new(expect: ['en'], actual: 'ja', tag: :only),
+          'ja.key_3' => I18nFlow::InvalidLocaleError.new(expect: ['en'], actual: 'ja'),
         })
       end
     end

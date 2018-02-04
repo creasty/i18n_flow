@@ -1,4 +1,12 @@
-class I18nFlow::ValidationError; end
+class I18nFlow::ValidationError
+  def ==(other)
+    return false unless other.is_a?(self.class)
+    data == other.data
+  end
+
+  def data
+  end
+end
 
 class I18nFlow::TypeMismatchError < I18nFlow::ValidationError
   def ==(other)
@@ -9,22 +17,33 @@ end
 class I18nFlow::InvalidLocaleError < I18nFlow::ValidationError
   attr_reader :expect
   attr_reader :actual
-  attr_reader :tag
 
-  def initialize(expect:, actual:, tag:)
+  def initialize(expect:, actual:)
     @expect = expect
     @actual = actual
-    @tag    = tag
   end
 
-  def ==(other)
-    return false unless other.is_a?(self.class)
-    [expect, actual, tag] == [other.expect, other.actual, other.tag]
+  def data
+    [expect, actual]
   end
 end
 
 class I18nFlow::AsymmetricKeyError < I18nFlow::ValidationError
   def ==(other)
     other.is_a?(self.class)
+  end
+end
+
+class I18nFlow::AsymmetricArgsError < I18nFlow::ValidationError
+  attr_reader :expect
+  attr_reader :actual
+
+  def initialize(expect:, actual:)
+    @expect = expect
+    @actual = actual
+  end
+
+  def data
+    [expect, actual]
   end
 end
