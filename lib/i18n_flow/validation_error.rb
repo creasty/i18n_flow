@@ -9,9 +9,6 @@ class I18nFlow::ValidationError
 end
 
 class I18nFlow::TypeMismatchError < I18nFlow::ValidationError
-  def ==(other)
-    other.is_a?(self.class)
-  end
 end
 
 class I18nFlow::InvalidLocaleError < I18nFlow::ValidationError
@@ -29,9 +26,6 @@ class I18nFlow::InvalidLocaleError < I18nFlow::ValidationError
 end
 
 class I18nFlow::AsymmetricKeyError < I18nFlow::ValidationError
-  def ==(other)
-    other.is_a?(self.class)
-  end
 end
 
 class I18nFlow::AsymmetricArgsError < I18nFlow::ValidationError

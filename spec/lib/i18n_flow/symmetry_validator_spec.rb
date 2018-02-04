@@ -281,6 +281,25 @@ describe I18nFlow::SymmetryValidator do
           'ja.key_3' => I18nFlow::InvalidLocaleError.new(expect: ['en'], actual: 'ja'),
         })
       end
+
+      it 'should fail if the symmetric node is tagged with a different locale' do
+        t1 = parse_yaml(<<-YAML)
+        en:
+          key_1: text_1
+          key_2: !only:en text_2
+        YAML
+        t2 = parse_yaml(<<-YAML)
+        ja:
+          key_1: text_1
+          key_2: text_2
+        YAML
+
+        validator.validate(t1['en'], t2['ja'])
+
+        expect(validator.errors).to eq({
+          'ja.key_2' => I18nFlow::InvalidLocaleError.new(expect: ['en'], actual: 'ja'),
+        })
+      end
     end
 
     context 'args' do

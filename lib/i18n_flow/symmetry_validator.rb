@@ -35,12 +35,12 @@ private
       return
     end
 
-    check_type(n1, n2)&.tap do |(key, err)|
+    check_asymmetric_key(n1, n2)&.tap do |(key, err)|
       errors[key] = err
       return
     end
 
-    check_asymmetric_key(n1, n2)&.tap do |(key, err)|
+    check_type(n1, n2)&.tap do |(key, err)|
       errors[key] = err
       return
     end
