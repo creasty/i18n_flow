@@ -282,5 +282,72 @@ describe I18nFlow::SymmetryValidator do
         })
       end
     end
+
+    context 'args' do
+      it 'should pass if the arguments are exclusive and exhaustive' do
+        t1 = parse_yaml(<<-YAML)
+        en:
+          key_1: '%{arg_1} %{arg_2}'
+        YAML
+        t2 = parse_yaml(<<-YAML)
+        ja:
+          key_1: '%{arg_1} %{arg_2}'
+        YAML
+
+        validator.validate(t1['en'], t2['ja'])
+
+        expect(validator.errors).to eq({})
+      end
+
+      it 'should be insensitive of the order of arguments' do
+        t1 = parse_yaml(<<-YAML)
+        en:
+          key_1: '%{arg_1} %{arg_2}'
+        YAML
+        t2 = parse_yaml(<<-YAML)
+        ja:
+          key_1: '%{arg_2} %{arg_1}'
+        YAML
+
+        validator.validate(t1['en'], t2['ja'])
+
+        expect(validator.errors).to eq({})
+      end
+
+      it 'should ignore confusing args' do
+        t1 = parse_yaml(<<-YAML)
+        en:
+          key_1: 'foo %%{arg_1}'
+        YAML
+        t2 = parse_yaml(<<-YAML)
+        ja:
+          key_1: 'foo'
+        YAML
+
+        validator.validate(t1['en'], t2['ja'])
+
+        expect(validator.errors).to eq({})
+      end
+
+      it 'should detect unbalanced arguments' do
+        t1 = parse_yaml(<<-YAML)
+        en:
+          key_1: 'foo %{arg_1}'
+        YAML
+        t2 = parse_yaml(<<-YAML)
+        ja:
+          key_1: 'foo %{arg_2}'
+        YAML
+
+        validator.validate(t1['en'], t2['ja'])
+
+        expect(validator.errors).to eq({
+          'ja.key_1' => I18nFlow::AsymmetricArgsError.new(
+            expect: ['arg_1'],
+            actual: ['arg_2'],
+          )
+        })
+      end
+    end
   end
 end
