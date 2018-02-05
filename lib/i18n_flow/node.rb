@@ -56,8 +56,8 @@ class I18nFlow::Node
     @scope.join('.')
   end
 
-  def hash
-    @hash ||= {}
+  def content
+    @content ||= {}
   end
 
   def value?

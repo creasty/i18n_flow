@@ -16,7 +16,7 @@ private
 
   def validate_scope(tree, scopes:)
     scopes.each_with_index do |scope, i|
-      node = tree.hash[scope]
+      node = tree.content[scope]
 
       if node.nil?
         key = scopes[0..i].join('.')
@@ -24,10 +24,10 @@ private
         break
       end
 
-      if tree.hash.size > 1
+      if tree.content.size > 1
         key = scopes[0...i].join('.')
         errors << I18nFlow::ExtraKeysError.new(key,
-          extra_keys: tree.hash.keys - [scope],
+          extra_keys: tree.content.keys - [scope],
         ).set_location(node)
         break
       end

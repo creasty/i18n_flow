@@ -4,7 +4,7 @@ require_relative 'util'
 class I18nFlow::SymmetryValidator
   def validate(t1, t2)
     @errors = nil
-    validate_hash(t1.hash, t2.hash)
+    validate_content(t1.content, t2.content)
   end
 
   def errors
@@ -13,7 +13,7 @@ class I18nFlow::SymmetryValidator
 
 private
 
-  def validate_hash(h1, h2)
+  def validate_content(h1, h2)
     keys = h1.keys | h2.keys
 
     keys.each do |k|
@@ -49,7 +49,7 @@ private
         errors << err
       end
     else
-      validate_hash(n1.hash, n2.hash)
+      validate_content(n1.content, n2.content)
     end
   end
 

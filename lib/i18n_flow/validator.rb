@@ -35,7 +35,7 @@ class I18nFlow::Validator
       foreign_trees = locale_trees.values_at(*foreign_locales)
 
       foreign_locales.zip(foreign_trees).each do |(locale, foreign_tree)|
-        symmetry.validate(master_tree.hash[@master_locale], foreign_tree.hash[locale])
+        symmetry.validate(master_tree.content[@master_locale], foreign_tree.content[locale])
 
         symmetry.errors.each do |err|
           errors[err.file][err.key] = err

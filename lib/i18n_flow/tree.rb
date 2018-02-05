@@ -14,17 +14,17 @@ class I18nFlow::Tree
       file_path:  @file_path,
       start_line: 0,
     ).tap do |node|
-      visit(root, scope: [], hash: node.hash)
+      visit(root, scope: [], content: node.content)
     end
   end
 
 private
 
-  def visit(o, scope:, hash:)
+  def visit(o, scope:, content:)
     case o
     when ::Psych::Nodes::Stream, ::Psych::Nodes::Document
       o.children.each do |c|
-        visit(c, scope: scope, hash: hash)
+        visit(c, scope: scope, content: content)
       end
     when ::Psych::Nodes::Scalar
       node = I18nFlow::Node.new(
@@ -36,7 +36,7 @@ private
         anchor:     o.anchor,
         tag:        o.tag,
       )
-      hash[node.key] = node
+      content[node.key] = node
     when ::Psych::Nodes::Sequence
       if scope.any?
         node = I18nFlow::Node.new(
@@ -47,12 +47,12 @@ private
           anchor:     o.anchor,
           tag:        o.tag,
         )
-        hash[node.key] = node
-        hash = node.hash
+        content[node.key] = node
+        content = node.content
       end
 
       o.children.each_with_index do |c, i|
-        visit(c, scope: [*scope, '$%d' % [i]], hash: hash)
+        visit(c, scope: [*scope, '$%d' % [i]], content: content)
       end
     when ::Psych::Nodes::Alias, ::Psych::Nodes::Mapping
       if scope.any?
@@ -64,13 +64,13 @@ private
           anchor:     o.anchor,
           tag:        o.tag,
         )
-        hash[node.key] = node
-        hash = node.hash
+        content[node.key] = node
+        content = node.content
       end
 
       o.children.each_slice(2) do |k, v|
         next if should_ignore?(k)
-        visit(v, scope: [*scope, k.value], hash: hash)
+        visit(v, scope: [*scope, k.value], content: content)
       end
     end
   end

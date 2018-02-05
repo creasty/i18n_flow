@@ -21,7 +21,7 @@ private
         inspect_tag(node),
       ].compact.join(' ')
 
-      node.hash.values.each do |n|
+      node.content.values.each do |n|
         lines << inspect_node(n).gsub(/^/, "    ")
       end
     end.join("\n")
