@@ -9,8 +9,12 @@ class I18nFlow::Tree
   end
 
   def tree
-    {}.tap do |hash|
-      visit(root, scope: [], hash: hash)
+    I18nFlow::Node.new(
+      scope:      [],
+      file_path:  @file_path,
+      start_line: 0,
+    ).tap do |node|
+      visit(root, scope: [], hash: node.hash)
     end
   end
 

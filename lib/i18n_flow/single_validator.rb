@@ -2,10 +2,10 @@ require_relative 'validation_error'
 require_relative 'util'
 
 class I18nFlow::SingleValidator
-  def validate(hash, filepath:)
+  def validate(tree, filepath:)
     @errors = nil
     scopes = I18nFlow::Util.filepath_to_scope(filepath)
-    validate_scope(hash, scopes: scopes)
+    validate_scope(tree, scopes: scopes)
   end
 
   def errors
@@ -14,9 +14,9 @@ class I18nFlow::SingleValidator
 
 private
 
-  def validate_scope(hash, scopes:)
+  def validate_scope(tree, scopes:)
     scopes.each_with_index do |scope, i|
-      node = hash[scope]
+      node = tree.hash[scope]
 
       if node.nil?
         key = scopes[0..i].join('.')
@@ -24,10 +24,10 @@ private
         break
       end
 
-      if hash.size > 1
+      if tree.hash.size > 1
         key = scopes[0...i].join('.')
         errors << I18nFlow::ExtraKeysError.new(key,
-          extra_keys: hash.keys - [scope],
+          extra_keys: tree.hash.keys - [scope],
         ).set_location(node)
         break
       end
@@ -38,7 +38,7 @@ private
         break
       end
 
-      hash = node.hash
+      tree = node
     end
   end
 end
