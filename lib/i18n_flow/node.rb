@@ -14,7 +14,7 @@ class I18nFlow::Node
   attr_reader :valid_locales
 
   def initialize(
-    scope:,
+    scopes:,
     file_path: nil,
     value: nil,
     start_line: nil,
@@ -22,7 +22,7 @@ class I18nFlow::Node
     anchor: nil,
     tag: nil
   )
-    @scope      = scope
+    @scopes     = scopes
     @file_path  = file_path
     @value      = value
     @start_line = start_line
@@ -41,22 +41,22 @@ class I18nFlow::Node
   end
 
   def level
-    @scope.size
+    @scopes.size
   end
 
   def key
-    @scope.last
+    @scopes.last
   end
 
   def locale
-    @scope.first
+    @scopes.first
   end
 
   def full_key(locale: nil)
     if locale
-      [locale, *@scope.drop(1)].join('.')
+      [locale, *@scopes.drop(1)].join('.')
     else
-      @scope.join('.')
+      @scopes.join('.')
     end
   end
 

@@ -19,23 +19,23 @@ private
       node = tree.content[scope]
 
       if node.nil?
-        key = scopes[0..i].join('.')
-        errors << I18nFlow::MissingKeyError.new(key).set_location(tree)
+        full_key = scopes[0..i].join('.')
+        errors << I18nFlow::MissingKeyError.new(full_key).set_location(tree)
         break
       end
 
       if tree.content.size > 1
-        parent_scope = scopes[0...i]
+        parent_scopes = scopes[0...i]
         (tree.content.keys - [scope]).each do |key|
-          key = [*parent_scope, key].join('.')
-          errors << I18nFlow::ExtraKeyError.new(key).set_location(node)
+          full_key = [*parent_scopes, key].join('.')
+          errors << I18nFlow::ExtraKeyError.new(full_key).set_location(node)
         end
         break
       end
 
       if node.value?
-        key = scopes[0..i].join('.')
-        errors << I18nFlow::InvalidTypeError.new(key).set_location(node)
+        full_key = scopes[0..i].join('.')
+        errors << I18nFlow::InvalidTypeError.new(full_key).set_location(node)
         break
       end
 

@@ -10,25 +10,25 @@ class I18nFlow::Tree
 
   def tree
     I18nFlow::Node.new(
-      scope:      [],
+      scopes:     [],
       file_path:  @file_path,
       start_line: 0,
     ).tap do |node|
-      visit(root, scope: [], content: node.content)
+      visit(root, scopes: [], content: node.content)
     end
   end
 
 private
 
-  def visit(o, scope:, content:)
+  def visit(o, scopes:, content:)
     case o
     when ::Psych::Nodes::Stream, ::Psych::Nodes::Document
       o.children.each do |c|
-        visit(c, scope: scope, content: content)
+        visit(c, scopes: scopes, content: content)
       end
     when ::Psych::Nodes::Scalar
       node = I18nFlow::Node.new(
-        scope:      scope,
+        scopes:     scopes,
         file_path:  @file_path,
         value:      o.value,
         start_line: o.start_line + 1,
@@ -38,9 +38,9 @@ private
       )
       content[node.key] = node
     when ::Psych::Nodes::Sequence
-      if scope.any?
+      if scopes.any?
         node = I18nFlow::Node.new(
-          scope:      scope,
+          scopes:     scopes,
           file_path:  @file_path,
           start_line: o.start_line + 1,
           end_line:   o.end_line,
@@ -52,12 +52,12 @@ private
       end
 
       o.children.each_with_index do |c, i|
-        visit(c, scope: [*scope, '$%d' % [i]], content: content)
+        visit(c, scopes: [*scopes, '$%d' % [i]], content: content)
       end
     when ::Psych::Nodes::Alias, ::Psych::Nodes::Mapping
-      if scope.any?
+      if scopes.any?
         node = I18nFlow::Node.new(
-          scope:      scope,
+          scopes:     scopes,
           file_path:  @file_path,
           start_line: o.start_line + 1,
           end_line:   o.end_line,
@@ -70,7 +70,7 @@ private
 
       o.children.each_slice(2) do |k, v|
         next if should_ignore?(k)
-        visit(v, scope: [*scope, k.value], content: content)
+        visit(v, scopes: [*scopes, k.value], content: content)
       end
     end
   end
