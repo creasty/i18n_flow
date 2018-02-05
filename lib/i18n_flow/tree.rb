@@ -3,8 +3,9 @@ require_relative 'node'
 class I18nFlow::Tree
   attr_reader :root
 
-  def initialize(root)
+  def initialize(root, file_path: nil)
     @root = root
+    @file_path = file_path
   end
 
   def tree
@@ -24,6 +25,7 @@ private
     when ::Psych::Nodes::Scalar
       node = I18nFlow::Node.new(
         scope:      scope,
+        file_path:  @file_path,
         value:      o.value,
         start_line: o.start_line + 1,
         end_line:   o.end_line,
@@ -35,6 +37,7 @@ private
       if scope.any?
         node = I18nFlow::Node.new(
           scope:      scope,
+          file_path:  @file_path,
           start_line: o.start_line + 1,
           end_line:   o.end_line,
           anchor:     o.anchor,
@@ -51,6 +54,7 @@ private
       if scope.any?
         node = I18nFlow::Node.new(
           scope:      scope,
+          file_path:  @file_path,
           start_line: o.start_line + 1,
           end_line:   o.end_line,
           anchor:     o.anchor,

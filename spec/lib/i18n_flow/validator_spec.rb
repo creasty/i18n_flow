@@ -3,8 +3,8 @@ describe I18nFlow::Validator do
      I18nFlow::Validator.new(
        base_path:     '/fixtures',
        glob_patterns: ['models/**/*.yml', 'views/**/*.yml'],
-       valid_locales: %w[ja en fr],
-       master_locale: 'ja',
+       valid_locales: %w[en ja fr],
+       master_locale: 'en',
      )
   end
 

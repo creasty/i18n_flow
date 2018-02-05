@@ -17,7 +17,7 @@ class I18nFlow::Parser
     @builder.root
   end
 
-  def tree
-    I18nFlow::Tree.new(root).tree
+  def tree(file_path: nil)
+    I18nFlow::Tree.new(root, file_path: file_path).tree
   end
 end

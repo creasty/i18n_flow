@@ -16,9 +16,9 @@ class I18nFlow::ValidationError
     [key]
   end
 
-  def set_location(file:, line:)
-    @file = file
-    @line = line
+  def set_location(node)
+    @file = node.file_path
+    @line = node.start_line
     self
   end
 end

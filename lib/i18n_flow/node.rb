@@ -7,6 +7,7 @@ class I18nFlow::Node
 
   attr_accessor :start_line
   attr_accessor :end_line
+  attr_reader :file_path
   attr_reader :value
   attr_reader :anchor
   attr_reader :todo_locales
@@ -14,6 +15,7 @@ class I18nFlow::Node
 
   def initialize(
     scope:,
+    file_path: nil,
     value: nil,
     start_line: nil,
     end_line: nil,
@@ -21,6 +23,7 @@ class I18nFlow::Node
     tag: nil
   )
     @scope      = scope
+    @file_path  = file_path
     @value      = value
     @start_line = start_line
     @end_line   = end_line

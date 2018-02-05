@@ -60,12 +60,12 @@ private
       I18nFlow::InvalidLocaleError.new(n1.full_key,
         expect: n1.valid_locales,
         actual: n1.locale,
-      )
+      ).set_location(n1)
     elsif n2&.locale && !n1.valid_locales.include?(n2.locale)
       I18nFlow::InvalidLocaleError.new(n2.full_key,
         expect: n1.valid_locales,
         actual: n2.locale,
-      )
+      ).set_location(n2)
     else
       false
     end
@@ -75,14 +75,14 @@ private
     return unless n1 && n2
     return if n1.value? == n2.value?
 
-    I18nFlow::TypeMismatchError.new(n2.full_key)
+    I18nFlow::TypeMismatchError.new(n2.full_key).set_location(n2)
   end
 
   def check_asymmetric_key(n1, n2)
     return if n1 && n2
 
     either = n1 || n2
-    I18nFlow::AsymmetricKeyError.new(either.full_key)
+    I18nFlow::AsymmetricKeyError.new(either.full_key).set_location(either)
   end
 
   def check_args(n1, n2)
@@ -94,6 +94,6 @@ private
     I18nFlow::AsymmetricArgsError.new(n2.full_key,
       expect: args_1,
       actual: args_2,
-    )
+    ).set_location(n2)
   end
 end

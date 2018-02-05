@@ -28,13 +28,13 @@ private
         key = scopes[0...i].join('.')
         errors << I18nFlow::ExtraKeysError.new(key,
           extra_keys: hash.keys - [scope],
-        )
+        ).set_location(node)
         break
       end
 
       if node.value?
         key = scopes[0..i].join('.')
-        errors << I18nFlow::InvalidTypeError.new(key)
+        errors << I18nFlow::InvalidTypeError.new(key).set_location(node)
         break
       end
 

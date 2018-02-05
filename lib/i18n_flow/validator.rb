@@ -22,7 +22,9 @@ class I18nFlow::Validator
 
     trees.each do |path, tree|
       single.validate(tree, filepath: path)
-      errors[path].merge!(single.errors) if single.errors.any?
+      single.errors.each do |err|
+        errors[err.file][err.key] = err
+      end
     end
 
     trees_by_scope.each do |scope, locale_trees|
@@ -34,7 +36,10 @@ class I18nFlow::Validator
 
       foreign_locales.zip(foreign_trees).each do |(locale, foreign_tree)|
         symmetry.validate(master_tree[@master_locale], foreign_tree[locale])
-        errors[scope].merge!(symmetry.errors) if symmetry.errors.any?
+
+        symmetry.errors.each do |err|
+          errors[err.file][err.key] = err
+        end
       end
     end
   end
@@ -64,8 +69,8 @@ class I18nFlow::Validator
     @trees ||= file_paths
       .map { |path|
         File.open(path) { |f| parser.parse(f.read) }
-        rel_path = Pathname.new(path).relative_path_from(@base_path)
-        [rel_path.to_s, parser.tree]
+        rel_path = Pathname.new(path).relative_path_from(@base_path).to_s
+        [rel_path, parser.tree(file_path: rel_path)]
       }
       .to_h
   end
