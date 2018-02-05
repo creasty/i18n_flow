@@ -8,40 +8,56 @@ describe I18nFlow::Validator do
      )
   end
 
-  before do
-    create_file('/fixtures/models/user.en.yml', <<-YAML)
+  let(:models_user_en_yml) do
+    <<-YAML
     en:
       models:
         user:
           key_1: text_1
     YAML
-    create_file('/fixtures/models/user.ja.yml', <<-YAML)
+  end
+  let(:models_user_ja_yml) do
+    <<-YAML
     ja:
       models:
         user:
           key_1: text_1
     YAML
-    create_file('/fixtures/views/profiles/show.en.yml', <<-YAML)
+  end
+  let(:views_profiles_show_en_yml) do
+    <<-YAML
     en:
       views:
         profiles:
           show:
             key_1: text_1
     YAML
-    create_file('/fixtures/views/profiles/show.ja.yml', <<-YAML)
+  end
+  let(:views_profiles_show_ja_yml) do
+    <<-YAML
     ja:
       views:
         profiles:
           show:
             key_1: text_1
     YAML
-    create_file('/fixtures/views/profiles/show.fr.yml', <<-YAML)
+  end
+  let(:views_profiles_show_fr_yml) do
+    <<-YAML
     fr:
       views:
         profiles:
           show:
             key_1: text_1
     YAML
+  end
+
+  before do
+    create_file('/fixtures/models/user.en.yml', models_user_en_yml)
+    create_file('/fixtures/models/user.ja.yml', models_user_ja_yml)
+    create_file('/fixtures/views/profiles/show.en.yml', views_profiles_show_en_yml)
+    create_file('/fixtures/views/profiles/show.ja.yml', views_profiles_show_ja_yml)
+    create_file('/fixtures/views/profiles/show.fr.yml', views_profiles_show_fr_yml)
   end
 
   describe '#file_paths' do
@@ -80,9 +96,57 @@ describe I18nFlow::Validator do
   end
 
   describe '#validate' do
-    it 'should' do
+    it 'should pass' do
       validator.validate
       expect(validator.errors).to eq({})
+    end
+
+    context 'violate single validator rules' do
+      let(:models_user_ja_yml) do
+        <<-YAML
+        ja:
+          modulo:
+            user:
+              key_1: text_1
+        YAML
+      end
+
+      it 'should fail' do
+        validator.validate
+        expect(validator.errors).to eq({
+          'models/user.ja.yml' => {
+            'ja.models' => I18nFlow::MissingKeyError.new('ja.models'),
+            'ja.modulo' => I18nFlow::AsymmetricKeyError.new('ja.modulo'),
+          },
+          'models/user.en.yml' => {
+            'en.models' => I18nFlow::AsymmetricKeyError.new('en.models'),
+          },
+        })
+      end
+    end
+
+    context 'violate symmetry validator rules' do
+      let(:views_profiles_show_ja_yml) do
+        <<-YAML
+        ja:
+          views:
+            profiles:
+              show:
+                key_2: text_2
+        YAML
+      end
+
+      it 'should fail' do
+        validator.validate
+        expect(validator.errors).to eq({
+          'views/profiles/show.en.yml' => {
+            'en.views.profiles.show.key_1' => I18nFlow::AsymmetricKeyError.new('en.views.profiles.show.key_1'),
+          },
+          'views/profiles/show.ja.yml' => {
+            'ja.views.profiles.show.key_2' => I18nFlow::AsymmetricKeyError.new('ja.views.profiles.show.key_2'),
+          },
+        })
+      end
     end
   end
 end
