@@ -17,11 +17,14 @@ private
     keys = t1.content.keys | t2.content.keys
 
     keys.each do |k|
-      validate_node(t1.content[k], t2.content[k], t2)
+      validate_node(t1, t2, k)
     end
   end
 
-  def validate_node(n1, n2, t2)
+  def validate_node(t1, t2, key)
+    n1 = t1.content[key]
+    n2 = t2.content[key]
+
     return if n1&.ignored? || n2&.ignored?
 
     check_only_tag(n1, n2)&.tap do |err|
@@ -75,7 +78,7 @@ private
     return unless n1 && n2
     return if n1.value? == n2.value?
 
-    I18nFlow::TypeMismatchError.new(n2.full_key).set_location(n2)
+    I18nFlow::InvalidTypeError.new(n2.full_key).set_location(n2)
   end
 
   def check_asymmetric_key(n1, n2, t2)

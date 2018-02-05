@@ -23,7 +23,13 @@ class I18nFlow::ValidationError
   end
 end
 
-class I18nFlow::TypeMismatchError < I18nFlow::ValidationError
+class I18nFlow::InvalidTypeError < I18nFlow::ValidationError
+end
+
+class I18nFlow::MissingKeyError < I18nFlow::ValidationError
+end
+
+class I18nFlow::ExtraKeyError < I18nFlow::ValidationError
 end
 
 class I18nFlow::InvalidLocaleError < I18nFlow::ValidationError
@@ -41,9 +47,6 @@ class I18nFlow::InvalidLocaleError < I18nFlow::ValidationError
   end
 end
 
-class I18nFlow::AsymmetricKeyError < I18nFlow::ValidationError
-end
-
 class I18nFlow::AsymmetricArgsError < I18nFlow::ValidationError
   attr_reader :expect
   attr_reader :actual
@@ -57,13 +60,4 @@ class I18nFlow::AsymmetricArgsError < I18nFlow::ValidationError
   def data
     super + [expect, actual]
   end
-end
-
-class I18nFlow::InvalidTypeError < I18nFlow::ValidationError
-end
-
-class I18nFlow::MissingKeyError < I18nFlow::ValidationError
-end
-
-class I18nFlow::ExtraKeyError < I18nFlow::ValidationError
 end

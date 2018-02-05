@@ -123,7 +123,7 @@ describe I18nFlow::SymmetryValidator do
         validator.validate(t1, t2)
 
         expect(validator.errors).to eq([
-          I18nFlow::TypeMismatchError.new('ja.key_2'),
+          I18nFlow::InvalidTypeError.new('ja.key_2'),
         ])
       end
 
@@ -145,7 +145,7 @@ describe I18nFlow::SymmetryValidator do
         validator.validate(t1, t2)
 
         expect(validator.errors).to eq([
-          I18nFlow::TypeMismatchError.new('ja.foo.key_2'),
+          I18nFlow::InvalidTypeError.new('ja.foo.key_2'),
         ])
       end
 
