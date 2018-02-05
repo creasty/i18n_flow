@@ -17,7 +17,7 @@ describe I18nFlow::SingleValidator do
 
       validator.validate(tree, filepath: filepath)
 
-      expect(validator.errors).to eq({})
+      expect(validator.errors).to eq([])
     end
 
     it 'should fail if the scope is missing' do
@@ -31,9 +31,9 @@ describe I18nFlow::SingleValidator do
 
       validator.validate(tree, filepath: filepath)
 
-      expect(validator.errors).to eq({
-        'en.foo.bar' => I18nFlow::MissingKeyError.new,
-      })
+      expect(validator.errors).to eq([
+        I18nFlow::MissingKeyError.new('en.foo.bar'),
+      ])
     end
 
     it 'should fail if its structure is invalid' do
@@ -47,9 +47,9 @@ describe I18nFlow::SingleValidator do
 
       validator.validate(tree, filepath: filepath)
 
-      expect(validator.errors).to eq({
-        'en.foo.bar' => I18nFlow::InvalidTypeError.new,
-      })
+      expect(validator.errors).to eq([
+        I18nFlow::InvalidTypeError.new('en.foo.bar'),
+      ])
     end
 
     it 'should fail if it contains extra keys' do
@@ -68,9 +68,9 @@ describe I18nFlow::SingleValidator do
 
       validator.validate(tree, filepath: filepath)
 
-      expect(validator.errors).to eq({
-        'en.foo' => I18nFlow::ExtraKeysError.new(extra_keys: %w[baz bax]),
-      })
+      expect(validator.errors).to eq([
+        I18nFlow::ExtraKeysError.new('en.foo', extra_keys: %w[baz bax]),
+      ])
     end
   end
 end

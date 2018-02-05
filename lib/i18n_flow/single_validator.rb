@@ -9,7 +9,7 @@ class I18nFlow::SingleValidator
   end
 
   def errors
-    @errors ||= {}
+    @errors ||= []
   end
 
 private
@@ -20,13 +20,13 @@ private
 
       if node.nil?
         key = scopes[0..i].join('.')
-        errors[key] = I18nFlow::MissingKeyError.new
+        errors << I18nFlow::MissingKeyError.new(key)
         break
       end
 
       if hash.size > 1
         key = scopes[0...i].join('.')
-        errors[key] = I18nFlow::ExtraKeysError.new(
+        errors << I18nFlow::ExtraKeysError.new(key,
           extra_keys: hash.keys - [scope],
         )
         break
@@ -34,7 +34,7 @@ private
 
       if node.value?
         key = scopes[0..i].join('.')
-        errors[key] = I18nFlow::InvalidTypeError.new
+        errors << I18nFlow::InvalidTypeError.new(key)
         break
       end
 

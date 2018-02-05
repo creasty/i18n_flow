@@ -21,7 +21,7 @@ describe I18nFlow::SymmetryValidator do
 
       validator.validate(t1['en'], t2['ja'])
 
-      expect(validator.errors).to eq({})
+      expect(validator.errors).to eq([])
     end
 
     context 'asymmetric key' do
@@ -39,10 +39,10 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({
-          'en.key_2' => I18nFlow::AsymmetricKeyError.new,
-          'ja.key_3' => I18nFlow::AsymmetricKeyError.new,
-        })
+        expect(validator.errors).to eq([
+          I18nFlow::AsymmetricKeyError.new('en.key_2'),
+          I18nFlow::AsymmetricKeyError.new('ja.key_3'),
+        ])
       end
 
       it 'should detect on nested node' do
@@ -61,10 +61,10 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({
-          'en.foo.key_2' => I18nFlow::AsymmetricKeyError.new,
-          'ja.foo.key_3' => I18nFlow::AsymmetricKeyError.new,
-        })
+        expect(validator.errors).to eq([
+          I18nFlow::AsymmetricKeyError.new('en.foo.key_2'),
+          I18nFlow::AsymmetricKeyError.new('ja.foo.key_3'),
+        ])
       end
 
       it 'should suppress an error on the ignored node (value)' do
@@ -81,9 +81,9 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({
-          'en.key_2' => I18nFlow::AsymmetricKeyError.new,
-        })
+        expect(validator.errors).to eq([
+          I18nFlow::AsymmetricKeyError.new('en.key_2'),
+        ])
       end
 
       it 'should suppress an error on the ignored node (map)' do
@@ -102,7 +102,7 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({})
+        expect(validator.errors).to eq([])
       end
     end
 
@@ -122,9 +122,9 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({
-          'ja.key_2' => I18nFlow::TypeMismatchError.new,
-        })
+        expect(validator.errors).to eq([
+          I18nFlow::TypeMismatchError.new('ja.key_2'),
+        ])
       end
 
       it 'should detect on nested node' do
@@ -144,9 +144,9 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({
-          'ja.foo.key_2' => I18nFlow::TypeMismatchError.new,
-        })
+        expect(validator.errors).to eq([
+          I18nFlow::TypeMismatchError.new('ja.foo.key_2'),
+        ])
       end
 
       it 'suppress an error on the ignored node' do
@@ -164,7 +164,7 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({})
+        expect(validator.errors).to eq([])
       end
 
       it 'suppress an error on the ignored node (outer map)' do
@@ -184,7 +184,7 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({})
+        expect(validator.errors).to eq([])
       end
     end
 
@@ -204,7 +204,7 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({})
+        expect(validator.errors).to eq([])
       end
 
       it 'should pass if the asymmetric node is tagged with its locale (map)' do
@@ -223,7 +223,7 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({})
+        expect(validator.errors).to eq([])
       end
 
       it 'should pass if the symmetric node is tagged with both locales' do
@@ -240,7 +240,7 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({})
+        expect(validator.errors).to eq([])
       end
 
       it 'should fail if the symmetric node is tagged with an one-side locale' do
@@ -257,9 +257,9 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({
-          'en.key_2' => I18nFlow::InvalidLocaleError.new(expect: ['ja'], actual: 'en'),
-        })
+        expect(validator.errors).to eq([
+          I18nFlow::InvalidLocaleError.new('en.key_2', expect: ['ja'], actual: 'en'),
+        ])
       end
 
       it 'should fail if the asymmetric node is tagged with a different locale' do
@@ -278,9 +278,9 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({
-          'ja.key_3' => I18nFlow::InvalidLocaleError.new(expect: ['en'], actual: 'ja'),
-        })
+        expect(validator.errors).to eq([
+          I18nFlow::InvalidLocaleError.new('ja.key_3', expect: ['en'], actual: 'ja'),
+        ])
       end
 
       it 'should fail if the symmetric node is tagged with a different locale' do
@@ -297,9 +297,9 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({
-          'ja.key_2' => I18nFlow::InvalidLocaleError.new(expect: ['en'], actual: 'ja'),
-        })
+        expect(validator.errors).to eq([
+          I18nFlow::InvalidLocaleError.new('ja.key_2', expect: ['en'], actual: 'ja'),
+        ])
       end
     end
 
@@ -316,7 +316,7 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({})
+        expect(validator.errors).to eq([])
       end
 
       it 'should be insensitive of the order of arguments' do
@@ -331,7 +331,7 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({})
+        expect(validator.errors).to eq([])
       end
 
       it 'should ignore confusing args' do
@@ -346,7 +346,7 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({})
+        expect(validator.errors).to eq([])
       end
 
       it 'should detect unbalanced arguments' do
@@ -361,12 +361,12 @@ describe I18nFlow::SymmetryValidator do
 
         validator.validate(t1['en'], t2['ja'])
 
-        expect(validator.errors).to eq({
-          'ja.key_1' => I18nFlow::AsymmetricArgsError.new(
+        expect(validator.errors).to eq([
+          I18nFlow::AsymmetricArgsError.new('ja.key_1',
             expect: ['arg_1'],
             actual: ['arg_2'],
           )
-        })
+        ])
       end
     end
   end
