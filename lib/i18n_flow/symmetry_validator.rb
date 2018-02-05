@@ -4,7 +4,7 @@ require_relative 'util'
 class I18nFlow::SymmetryValidator
   def validate(t1, t2)
     @errors = nil
-    validate_content(t1.content, t2.content)
+    validate_content(t1, t2)
   end
 
   def errors
@@ -13,15 +13,15 @@ class I18nFlow::SymmetryValidator
 
 private
 
-  def validate_content(h1, h2)
-    keys = h1.keys | h2.keys
+  def validate_content(t1, t2)
+    keys = t1.content.keys | t2.content.keys
 
     keys.each do |k|
-      validate_node(h1[k], h2[k])
+      validate_node(t1.content[k], t2.content[k], t2)
     end
   end
 
-  def validate_node(n1, n2)
+  def validate_node(n1, n2, t2)
     return if n1&.ignored? || n2&.ignored?
 
     check_only_tag(n1, n2)&.tap do |err|
@@ -34,7 +34,7 @@ private
       return
     end
 
-    check_asymmetric_key(n1, n2)&.tap do |err|
+    check_asymmetric_key(n1, n2, t2)&.tap do |err|
       errors << err
       return
     end
@@ -49,7 +49,7 @@ private
         errors << err
       end
     else
-      validate_content(n1.content, n2.content)
+      validate_content(n1, n2)
     end
   end
 
@@ -78,11 +78,14 @@ private
     I18nFlow::TypeMismatchError.new(n2.full_key).set_location(n2)
   end
 
-  def check_asymmetric_key(n1, n2)
+  def check_asymmetric_key(n1, n2, t2)
     return if n1 && n2
 
-    either = n1 || n2
-    I18nFlow::AsymmetricKeyError.new(either.full_key).set_location(either)
+    if n1
+      I18nFlow::MissingKeyError.new(n1.full_key(locale: t2.locale)).set_location(t2)
+    else
+      I18nFlow::ExtraKeyError.new(n2.full_key).set_location(n2)
+    end
   end
 
   def check_args(n1, n2)

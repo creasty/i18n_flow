@@ -116,10 +116,7 @@ describe I18nFlow::Validator do
         expect(validator.errors).to eq({
           'models/user.ja.yml' => {
             'ja.models' => I18nFlow::MissingKeyError.new('ja.models'),
-            'ja.modulo' => I18nFlow::AsymmetricKeyError.new('ja.modulo'),
-          },
-          'models/user.en.yml' => {
-            'en.models' => I18nFlow::AsymmetricKeyError.new('en.models'),
+            'ja.modulo' => I18nFlow::ExtraKeyError.new('ja.modulo'),
           },
         })
       end
@@ -139,11 +136,9 @@ describe I18nFlow::Validator do
       it 'should fail' do
         validator.validate
         expect(validator.errors).to eq({
-          'views/profiles/show.en.yml' => {
-            'en.views.profiles.show.key_1' => I18nFlow::AsymmetricKeyError.new('en.views.profiles.show.key_1'),
-          },
           'views/profiles/show.ja.yml' => {
-            'ja.views.profiles.show.key_2' => I18nFlow::AsymmetricKeyError.new('ja.views.profiles.show.key_2'),
+            'ja.views.profiles.show.key_2' => I18nFlow::ExtraKeyError.new('ja.views.profiles.show.key_2'),
+            'ja.views.profiles.show.key_1' => I18nFlow::MissingKeyError.new('ja.views.profiles.show.key_1'),
           },
         })
       end

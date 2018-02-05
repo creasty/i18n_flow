@@ -40,8 +40,8 @@ describe I18nFlow::SymmetryValidator do
         validator.validate(t1, t2)
 
         expect(validator.errors).to eq([
-          I18nFlow::AsymmetricKeyError.new('en.key_2'),
-          I18nFlow::AsymmetricKeyError.new('ja.key_3'),
+          I18nFlow::MissingKeyError.new('ja.key_2'),
+          I18nFlow::ExtraKeyError.new('ja.key_3'),
         ])
       end
 
@@ -62,8 +62,8 @@ describe I18nFlow::SymmetryValidator do
         validator.validate(t1, t2)
 
         expect(validator.errors).to eq([
-          I18nFlow::AsymmetricKeyError.new('en.foo.key_2'),
-          I18nFlow::AsymmetricKeyError.new('ja.foo.key_3'),
+          I18nFlow::MissingKeyError.new('ja.foo.key_2'),
+          I18nFlow::ExtraKeyError.new('ja.foo.key_3'),
         ])
       end
 
@@ -82,7 +82,7 @@ describe I18nFlow::SymmetryValidator do
         validator.validate(t1, t2)
 
         expect(validator.errors).to eq([
-          I18nFlow::AsymmetricKeyError.new('en.key_2'),
+          I18nFlow::MissingKeyError.new('ja.key_2'),
         ])
       end
 

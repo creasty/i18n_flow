@@ -25,10 +25,11 @@ private
       end
 
       if tree.content.size > 1
-        key = scopes[0...i].join('.')
-        errors << I18nFlow::ExtraKeysError.new(key,
-          extra_keys: tree.content.keys - [scope],
-        ).set_location(node)
+        parent_scope = scopes[0...i]
+        (tree.content.keys - [scope]).each do |key|
+          key = [*parent_scope, key].join('.')
+          errors << I18nFlow::ExtraKeyError.new(key).set_location(node)
+        end
         break
       end
 

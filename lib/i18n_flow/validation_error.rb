@@ -65,15 +65,5 @@ end
 class I18nFlow::MissingKeyError < I18nFlow::ValidationError
 end
 
-class I18nFlow::ExtraKeysError < I18nFlow::ValidationError
-  attr_reader :extra_keys
-
-  def initialize(key, extra_keys:)
-    super(key)
-    @extra_keys = extra_keys
-  end
-
-  def data
-    super + [extra_keys]
-  end
+class I18nFlow::ExtraKeyError < I18nFlow::ValidationError
 end

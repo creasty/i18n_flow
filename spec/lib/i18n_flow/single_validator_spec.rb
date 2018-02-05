@@ -69,7 +69,8 @@ describe I18nFlow::SingleValidator do
       validator.validate(tree, filepath: filepath)
 
       expect(validator.errors).to eq([
-        I18nFlow::ExtraKeysError.new('en.foo', extra_keys: %w[baz bax]),
+        I18nFlow::ExtraKeyError.new('en.foo.baz'),
+        I18nFlow::ExtraKeyError.new('en.foo.bax'),
       ])
     end
   end

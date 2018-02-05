@@ -52,8 +52,12 @@ class I18nFlow::Node
     @scope.first
   end
 
-  def full_key
-    @scope.join('.')
+  def full_key(locale: nil)
+    if locale
+      [locale, *@scope.drop(1)].join('.')
+    else
+      @scope.join('.')
+    end
   end
 
   def content
