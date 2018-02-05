@@ -20,7 +20,7 @@ private
 
       if node.nil?
         key = scopes[0..i].join('.')
-        errors << I18nFlow::MissingKeyError.new(key)
+        errors << I18nFlow::MissingKeyError.new(key).set_location(tree)
         break
       end
 
