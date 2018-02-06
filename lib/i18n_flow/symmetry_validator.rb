@@ -90,7 +90,8 @@ private
     return if n1 && n2
 
     if n1
-      I18nFlow::MissingKeyError.new(n1.full_key(locale: t2.locale)).set_location(t2)
+      full_key = [t2.locale, *n1.scopes.drop(1)].join('.')
+      I18nFlow::MissingKeyError.new(full_key).set_location(t2)
     else
       I18nFlow::ExtraKeyError.new(n2.full_key).set_location(n2)
     end

@@ -7,6 +7,7 @@ class I18nFlow::Node
 
   attr_accessor :start_line
   attr_accessor :end_line
+  attr_reader :scopes
   attr_reader :file_path
   attr_reader :value
   attr_reader :anchor
@@ -22,7 +23,7 @@ class I18nFlow::Node
     anchor: nil,
     tag: nil
   )
-    @scopes     = scopes
+    @scopes     = scopes.freeze
     @file_path  = file_path
     @value      = value
     @start_line = start_line
@@ -40,10 +41,6 @@ class I18nFlow::Node
     end_line - start_line + 1
   end
 
-  def level
-    @scopes.size
-  end
-
   def key
     @scopes.last
   end
@@ -52,12 +49,8 @@ class I18nFlow::Node
     @scopes.first
   end
 
-  def full_key(locale: nil)
-    if locale
-      [locale, *@scopes.drop(1)].join('.')
-    else
-      @scopes.join('.')
-    end
+  def full_key
+    @scopes.join('.')
   end
 
   def content
