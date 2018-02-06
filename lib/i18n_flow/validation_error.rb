@@ -32,6 +32,24 @@ end
 class I18nFlow::ExtraKeyError < I18nFlow::ValidationError
 end
 
+class I18nFlow::InvalidTodoError < I18nFlow::ValidationError
+end
+
+class I18nFlow::TodoContentError < I18nFlow::ValidationError
+  attr_reader :expect
+  attr_reader :actual
+
+  def initialize(key, expect:, actual:)
+    super(key)
+    @expect = expect
+    @actual = actual
+  end
+
+  def data
+    super + [expect, actual]
+  end
+end
+
 class I18nFlow::InvalidLocaleError < I18nFlow::ValidationError
   attr_reader :expect
   attr_reader :actual

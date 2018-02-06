@@ -47,6 +47,11 @@ private
       return
     end
 
+    check_todo_tag(n1, n2)&.tap do |err|
+      errors << err
+      return
+    end
+
     if n1.value?
       check_args(n1, n2)&.tap do |err|
         errors << err
@@ -88,6 +93,19 @@ private
       I18nFlow::MissingKeyError.new(n1.full_key(locale: t2.locale)).set_location(t2)
     else
       I18nFlow::ExtraKeyError.new(n2.full_key).set_location(n2)
+    end
+  end
+
+  def check_todo_tag(n1, n2)
+    return unless n2.todo?
+
+    if !n2.value?
+      I18nFlow::InvalidTodoError.new(n2.full_key).set_location(n2)
+    elsif n2.value != n1.value
+      I18nFlow::TodoContentError.new(n2.full_key,
+        expect: n1.value,
+        actual: n2.value,
+      ).set_location(n2)
     end
   end
 

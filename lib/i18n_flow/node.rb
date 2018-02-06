@@ -96,7 +96,7 @@ private
     case tag
     when TAG_TODO
       @tag = :todo
-      @todo_locales = $1.split(',').freeze
+      @todo_locales = $1.to_s.split(',').freeze
     when TAG_ONLY
       @tag = :only
       @valid_locales = $1.split(',').freeze

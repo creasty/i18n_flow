@@ -188,7 +188,7 @@ describe I18nFlow::SymmetryValidator do
       end
     end
 
-    context 'explicitly-annotated asymmetry' do
+    context '!only tag' do
       it 'should pass if the asymmetric node is tagged with its locale (value)' do
         t1 = parse_yaml(<<-YAML).content['en']
         en:
@@ -299,6 +299,66 @@ describe I18nFlow::SymmetryValidator do
 
         expect(validator.errors).to eq([
           I18nFlow::InvalidLocaleError.new('ja.key_2', expect: ['en'], actual: 'ja'),
+        ])
+      end
+    end
+
+    context '!todo tag' do
+      it 'should pass if the value is marked as todo' do
+        t1 = parse_yaml(<<-YAML).content['en']
+        en:
+          key_1: text_1
+          key_2: text_2
+        YAML
+        t2 = parse_yaml(<<-YAML).content['ja']
+        ja:
+          key_1: text_1
+          key_2: !todo text_2
+        YAML
+
+        validator.validate(t1, t2)
+
+        expect(validator.errors).to eq([])
+      end
+
+      it 'should fail if the tag is on a non-value node' do
+        t1 = parse_yaml(<<-YAML).content['en']
+        en:
+          key_1: text_1
+          foo: !todo
+            key_2: text_2
+        YAML
+        t2 = parse_yaml(<<-YAML).content['ja']
+        ja:
+          key_1: text_1
+          foo: !todo
+            key_2: text_2
+        YAML
+
+        validator.validate(t1, t2)
+
+        expect(validator.errors).to eq([
+          # en.foo is ignored,
+          I18nFlow::InvalidTodoError.new('ja.foo'),
+        ])
+      end
+
+      it 'should fail if texts are different' do
+        t1 = parse_yaml(<<-YAML).content['en']
+        en:
+          key_1: text_1
+          key_2: text_2
+        YAML
+        t2 = parse_yaml(<<-YAML).content['ja']
+        ja:
+          key_1: text_1
+          key_2: !todo text_9
+        YAML
+
+        validator.validate(t1, t2)
+
+        expect(validator.errors).to eq([
+          I18nFlow::TodoContentError.new('ja.key_2', expect: 'text_2', actual: 'text_9'),
         ])
       end
     end
