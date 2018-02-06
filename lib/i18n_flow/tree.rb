@@ -31,8 +31,8 @@ private
         scopes:     scopes,
         file_path:  @file_path,
         value:      o.value,
-        start_line: o.start_line,
-        end_line:   o.end_line,
+        start_line: o.start_line + 1,
+        end_line:   o.end_line + 1,
         anchor:     o.anchor,
         tag:        o.tag,
       )
