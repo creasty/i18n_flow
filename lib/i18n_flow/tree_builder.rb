@@ -3,10 +3,17 @@ require 'psych'
 class I18nFlow::TreeBuilder < Psych::TreeBuilder
   attr_accessor :parser
 
+  def initialize
+    super
+    @last_line = 0
+  end
+
   def scalar(value, anchor, tag, plain, quoted, style)
-    mark = parser.mark
     super.tap do |s|
-      s.start_line = mark.line
+      mark = parser.mark
+      s.start_line = @last_line
+      s.end_line = mark.line
+      @last_line = mark.line
     end
   end
 
@@ -21,6 +28,7 @@ class I18nFlow::TreeBuilder < Psych::TreeBuilder
     mark = parser.mark
     super.tap do |s|
       s.end_line = mark.line
+      @last_line = mark.line
     end
   end
 
@@ -35,6 +43,21 @@ class I18nFlow::TreeBuilder < Psych::TreeBuilder
     mark = parser.mark
     super.tap do |s|
       s.end_line = mark.line
+      @last_line = mark.line
+    end
+  end
+
+  def end_document(implicit)
+    mark = parser.mark
+    super.tap do |s|
+      @last_line = mark.line
+    end
+  end
+
+  def end_stream
+    mark = parser.mark
+    super.tap do |s|
+      @last_line = mark.line
     end
   end
 end
