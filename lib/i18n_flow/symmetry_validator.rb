@@ -62,7 +62,7 @@ private
   end
 
   def check_only_tag(n1, n2)
-    return unless n1&.has_only?
+    return unless n1&.only?
 
     if !n1.valid_locale?
       I18nFlow::InvalidLocaleError.new(n1.full_key,

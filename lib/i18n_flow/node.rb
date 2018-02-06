@@ -80,12 +80,12 @@ class I18nFlow::Node
     @tag == :ignore
   end
 
-  def has_only?
+  def only?
     @tag == :only && @valid_locales.any?
   end
 
   def valid_locale?
-    !has_only? || @valid_locales.include?(locale)
+    !only? || @valid_locales.include?(locale)
   end
 
 private
