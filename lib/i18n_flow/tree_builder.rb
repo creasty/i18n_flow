@@ -1,64 +1,103 @@
 require 'psych'
 
-class I18nFlow::TreeBuilder < Psych::TreeBuilder
+class I18nFlow::TreeBuilder < Psych::Handler
+  attr_reader :root
   attr_accessor :parser
 
   def initialize
-    super
-    @last_line = 0
-  end
-
-  def scalar(value, anchor, tag, plain, quoted, style)
-    super.tap do |s|
-      end_line = [parser.mark.line, @last_line + 1].max
-
-      s.start_line = @last_line + 1
-      s.end_line = end_line
-      @last_line = end_line - 1
-    end
+    @stack     = []
+    @root      = nil
+    @last_line = nil
   end
 
   def start_mapping(anchor, tag, implicit, style)
-    mark = parser.mark
-    super.tap do |s|
-      s.start_line = mark.line
+    @last_line = parser.mark.line
+
+    Psych::Nodes::Mapping.new(anchor, tag, implicit, style).tap do |n|
+      n.start_line = @last_line
+      @stack.last.children << n
+      @stack << n
     end
   end
 
   def end_mapping
-    mark = parser.mark
-    super.tap do |s|
-      s.end_line = mark.line
-      @last_line = mark.line
+    @last_line = parser.mark.line
+
+    @stack.pop.tap do |n|
+      n.end_line = @last_line
     end
   end
 
   def start_sequence(anchor, tag, implicit, style)
-    mark = parser.mark
-    super.tap do |s|
-      s.start_line = mark.line
+    @last_line = parser.mark.line
+
+    Psych::Nodes::Sequence.new(anchor, tag, implicit, style).tap do |n|
+      n.start_line = @last_line
+      @stack.last.children << n
+      @stack << n
     end
   end
 
   def end_sequence
-    mark = parser.mark
-    super.tap do |s|
-      s.end_line = mark.line
-      @last_line = mark.line
+    @last_line = parser.mark.line
+
+    @stack.pop.tap do |n|
+      n.end_line = @last_line
     end
   end
 
-  def end_document(implicit)
-    mark = parser.mark
-    super.tap do |s|
-      @last_line = mark.line
+  def start_document(version, tag_directives, implicit)
+    @last_line = parser.mark.line
+
+    # Psych::Nodes::Document.new(version, tag_directives, implicit).tap do |n|
+    #   n.start_line = @last_line
+    #   @stack.last.children << n
+    #   @stack << n
+    # end
+  end
+
+  def end_document(implicit_end = !streaming?)
+    @last_line = parser.mark.line
+
+    # @stack.pop.tap do |n|
+    #   n.implicit_end = implicit_end
+    #   n.end_line = @last_line
+    # end
+  end
+
+  def start_stream(encoding)
+    @last_line = parser.mark.line
+
+    @root = Psych::Nodes::Stream.new(encoding).tap do |n|
+      n.start_line = @last_line
+      @stack << n
     end
   end
 
   def end_stream
-    mark = parser.mark
-    super.tap do |s|
-      @last_line = mark.line
+    @last_line = parser.mark.line
+
+    @stack.pop.tap do |n|
+      n.end_line = @last_line
     end
+  end
+
+  def scalar(value, anchor, tag, plain, quoted, style)
+    last_line = @last_line + 1
+    @last_line = [parser.mark.line, last_line].max - 1
+
+    Psych::Nodes::Scalar.new(value, anchor, tag, plain, quoted, style).tap do |s|
+      s.start_line = last_line
+      s.end_line = @last_line + 1
+      @stack.last.children << s
+    end
+  end
+
+  def alias(anchor)
+    @last_line = parser.mark.line
+
+    # Psych::Nodes::Alias.new(anchor).tap do |n|
+    #   @stack.last.children << n
+    # end
   end
 end
