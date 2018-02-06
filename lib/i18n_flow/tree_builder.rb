@@ -10,10 +10,11 @@ class I18nFlow::TreeBuilder < Psych::TreeBuilder
 
   def scalar(value, anchor, tag, plain, quoted, style)
     super.tap do |s|
-      mark = parser.mark
-      s.start_line = @last_line
-      s.end_line = mark.line
-      @last_line = mark.line
+      end_line = [parser.mark.line, @last_line + 1].max
+
+      s.start_line = @last_line + 1
+      s.end_line = end_line
+      @last_line = end_line - 1
     end
   end
 

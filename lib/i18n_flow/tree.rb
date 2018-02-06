@@ -12,7 +12,7 @@ class I18nFlow::Tree
     I18nFlow::Node.new(
       scopes:     [],
       file_path:  @file_path,
-      start_line: 0,
+      start_line: 1,
     ).tap do |node|
       visit(root, scopes: [], content: node.content)
     end
@@ -31,7 +31,7 @@ private
         scopes:     scopes,
         file_path:  @file_path,
         value:      o.value,
-        start_line: o.start_line + 1,
+        start_line: o.start_line,
         end_line:   o.end_line,
         anchor:     o.anchor,
         tag:        o.tag,
@@ -42,7 +42,7 @@ private
         node = I18nFlow::Node.new(
           scopes:     scopes,
           file_path:  @file_path,
-          start_line: o.start_line + 1,
+          start_line: o.start_line,
           end_line:   o.end_line,
           anchor:     o.anchor,
           tag:        o.tag,
@@ -59,7 +59,7 @@ private
         node = I18nFlow::Node.new(
           scopes:     scopes,
           file_path:  @file_path,
-          start_line: o.start_line + 1,
+          start_line: o.start_line,
           end_line:   o.end_line,
           anchor:     o.anchor,
           tag:        o.tag,
