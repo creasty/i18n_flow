@@ -5,13 +5,14 @@ class I18nFlow::TreeInspector
 
   def inspect
     [].tap do |lines|
-      @tree.values.each do |n|
+      @tree.content.values.each do |n|
         lines << inspect_node(n)
       end
     end.join("\n")
   end
 
 private
+
   def inspect_node(node)
     [].tap do |lines|
       lines << [
@@ -41,8 +42,8 @@ private
   end
 
   def inspect_tag(node)
-    return 'TOOD' if node.todo?
+    return 'TOOD:%s' % [node.todo_locales.join(',')] if node.todo?
     return 'IGNORED' if node.ignored?
-    return 'ONLY:%s' % [node.only] if node.only
+    return 'ONLY:%s' % [node.valid_locales.join(',')] if node.has_only?
   end
 end
