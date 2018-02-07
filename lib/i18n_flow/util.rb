@@ -15,4 +15,9 @@ module I18nFlow::Util
 
     ([locale] + scopes + basename).compact
   end
+
+  def scope_to_filepath(scopes)
+    locale, *components = scopes
+    '%s.%s.yml' % [components.join('/'), locale]
+  end
 end

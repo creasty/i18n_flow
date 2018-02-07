@@ -32,4 +32,18 @@ describe I18nFlow::Util do
       end
     end
   end
+
+  describe '.scope_to_filepath' do
+    it 'should build file path from scopes' do
+      {
+        %w[en]                 => 'en.yml',
+        %w[en foo]             => 'foo.en.yml',
+        %w[en foo bar]         => 'foo/bar/en.yml',
+        %w[en foo bar baz]     => 'foo/bar/baz.en.yml',
+        %w[en foo bar baz bax] => 'foo/bar/baz.bax.en.yml',
+      }.each do |input, output|
+        expect(I18nFlow::Util.scope_to_filepath(input)).to eq(output)
+      end
+    end
+  end
 end
