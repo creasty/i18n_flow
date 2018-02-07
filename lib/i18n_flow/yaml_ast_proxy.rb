@@ -46,7 +46,6 @@ class I18nFlow::YamlAstProxy
 
   def set(key, value)
     indexed_object[key] = value
-    synchronize!
   end
   alias []= set
 
@@ -62,6 +61,18 @@ class I18nFlow::YamlAstProxy
     end
   end
 
+  def sequence?
+    @node.is_a?(Psych::Nodes::Sequence)
+  end
+
+  def mapping?
+    @node.is_a?(Psych::Nodes::Sequence)
+  end
+
+  def scalar?
+    @node.is_a?(Psych::Nodes::Scalar)
+  end
+
   def value
     @node.value if @node.respond_to?(:value)
   end
@@ -70,9 +81,6 @@ private
 
   def indexed_object
     @indexed_object ||= self.class.create(@node, parent: @parent, scopes: scopes)
-  end
-
-  def synchronize!
   end
 
   def wrap(value, key:)
@@ -86,8 +94,8 @@ class I18nFlow::YamlAstProxy::Mapping < I18nFlow::YamlAstProxy
   def_delegators :indexed_object, :==
 
   def each
-    indexed_object.each do |k, v|
-      yield k, wrap(v, key: k)
+    indexed_object.each do |k, _|
+      yield k, cache[k]
     end
   end
 
@@ -96,10 +104,30 @@ class I18nFlow::YamlAstProxy::Mapping < I18nFlow::YamlAstProxy
   end
 
   def values
-    indexed_object.map { |k, v| wrap(v, key: k) }
+    indexed_object.map { |k, _| cache[k] }
+  end
+
+  def set(key, value)
+    super.tap do
+      cache.delete(key)
+      synchronize!
+    end
+  end
+  alias []= set
+
+  def batch
+    @locked = true
+    yield
+  ensure
+    @locked = false
+    synchronize!
   end
 
 private
+
+  def cache
+    @cache ||= Hash.new { |h, k| h[k] = wrap(indexed_object[k], key: k) }
+  end
 
   def indexed_object
     @indexed_object ||= @node.children
@@ -109,6 +137,8 @@ private
   end
 
   def synchronize!
+    return if @locked
+
     children = indexed_object.flat_map { |k, v| [Psych::Nodes::Scalar.new(k), v] }
     @node.children.replace(children)
   end
