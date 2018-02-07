@@ -13,11 +13,11 @@ module I18nFlow::Util
     *scopes, filename = filepath.split('/')
     *basename, locale, _ = filename.split('.')
 
-    ([locale] + scopes + basename).compact
+    ([locale] + scopes + basename).compact.reject(&:empty?)
   end
 
   def scope_to_filepath(scopes)
     locale, *components = scopes
-    '%s.%s.yml' % [components.join('/'), locale]
+    [components.join('/'), locale, 'yml'].compact.reject(&:empty?).join('.')
   end
 end
