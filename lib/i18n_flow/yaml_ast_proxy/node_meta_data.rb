@@ -18,13 +18,11 @@ module I18nFlow::YamlAstProxy
     end
 
     def start_line
-      correction = node.is_a?(Psych::Nodes::Scalar) ? 1 : 0
-      node.start_line + correction
+      node.start_line + line_correction
     end
 
     def end_line
-      correction = node.is_a?(Psych::Nodes::Scalar) ? 1 : 0
-      node.end_line + correction
+      node.end_line + line_correction
     end
 
     def anchor
@@ -57,6 +55,12 @@ module I18nFlow::YamlAstProxy
 
     def valid_locale?
       !marked_as_only? || valid_locales.include?(locale)
+    end
+
+  private
+
+    def line_correction
+      node.is_a?(Psych::Nodes::Scalar) ? 1 : 0
     end
   end
 end

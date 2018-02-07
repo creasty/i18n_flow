@@ -46,7 +46,6 @@ module I18nFlow::YamlAstProxy
     def indexed_object
       @indexed_object ||= @node.children
         .each_slice(2)
-        .reject { |k, _| should_ignore?(k) }
         .map { |k, v| [k.value, v] }
         .to_h
     end
@@ -56,10 +55,6 @@ module I18nFlow::YamlAstProxy
 
       children = indexed_object.flat_map { |k, v| [Psych::Nodes::Scalar.new(k), v] }
       @node.children.replace(children)
-    end
-
-    def should_ignore?(k)
-      k.value == '<<' && k.tag != 'tag:yaml.org,2002:str'
     end
   end
 end
