@@ -49,24 +49,12 @@ module I18nFlow::YamlAstProxy
     end
     alias []= set
 
-    def enumerable?
-      case @node
-      when Psych::Nodes::Stream,
-        Psych::Nodes::Document,
-        Psych::Nodes::Mapping,
-        Psych::Nodes::Sequence
-        true
-      else
-        false
-      end
-    end
-
     def sequence?
-      @node.is_a?(Psych::Nodes::Sequence)
+      is_a?(Sequence)
     end
 
     def mapping?
-      @node.is_a?(Psych::Nodes::Sequence)
+      is_a?(Mapping)
     end
 
     def scalar?
