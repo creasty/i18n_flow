@@ -5,35 +5,30 @@ class I18nFlow::Node
   TAG_TODO   = /^!todo(?::([,a-zA-Z_-]+))?$/
   TAG_ONLY   = /^!only:([,a-zA-Z_-]+)$/
 
-  attr_accessor :start_line
-  attr_accessor :end_line
+  attr_reader :psych_node
   attr_reader :scopes
   attr_reader :file_path
-  attr_reader :value
-  attr_reader :anchor
   attr_reader :todo_locales
   attr_reader :valid_locales
 
-  def initialize(
-    scopes:,
-    file_path: nil,
-    value: nil,
-    start_line: nil,
-    end_line: nil,
-    anchor: nil,
-    tag: nil
-  )
+  def initialize(psych_node, scopes:, file_path:)
+    @psych_node = psych_node
     @scopes     = scopes.freeze
     @file_path  = file_path
-    @value      = value
-    @start_line = start_line
-    @end_line   = end_line
-    @anchor     = anchor
+
+    case psych_node
+    when Psych::Nodes::Scalar
+      @start_line = psych_node.start_line + 1
+      @end_line   = psych_node.end_line + 1
+    else
+      @start_line = psych_node.start_line
+      @end_line   = psych_node.end_line
+    end
 
     @todo_locales  = []
     @valid_locales = []
 
-    parse_tag!(tag)
+    parse_tag!(psych_node.tag)
   end
 
   def num_lines
@@ -57,28 +52,53 @@ class I18nFlow::Node
     @content ||= {}
   end
 
+  def start_line
+    @psych_node.start_line
+  end
+
+  def end_line
+    @psych_node.end_line
+  end
+
+  def value
+    return unless value?
+    @psych_node.value
+  end
+
+  def mapping?
+    @psych_node.is_a?(Psych::Nodes::Mapping)
+  end
+
   def value?
-    !value.nil?
+    @psych_node.is_a?(Psych::Nodes::Scalar)
+  end
+
+  def sequence?
+    @psych_node.is_a?(Psych::Nodes::Sequence)
+  end
+
+  def anchor
+    @psych_node.anchor
   end
 
   def has_anchor?
     !!anchor
   end
 
-  def todo?
+  def marked_as_todo?
     @tag == :todo
   end
 
-  def ignored?
+  def marked_as_ignored?
     @tag == :ignore
   end
 
-  def only?
+  def marked_as_only?
     @tag == :only && @valid_locales.any?
   end
 
   def valid_locale?
-    !only? || @valid_locales.include?(locale)
+    !marked_as_only? || @valid_locales.include?(locale)
   end
 
 private

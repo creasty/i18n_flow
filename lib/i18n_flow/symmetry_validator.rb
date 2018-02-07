@@ -25,7 +25,7 @@ private
     n1 = t1.content[key]
     n2 = t2.content[key]
 
-    return if n1&.ignored? || n2&.ignored?
+    return if n1&.marked_as_ignored? || n2&.marked_as_ignored?
 
     check_only_tag(n1, n2)&.tap do |err|
       errors << err if err
@@ -62,7 +62,7 @@ private
   end
 
   def check_only_tag(n1, n2)
-    return unless n1&.only?
+    return unless n1&.marked_as_only?
 
     if !n1.valid_locale?
       I18nFlow::InvalidLocaleError.new(n1.full_key,
@@ -98,7 +98,7 @@ private
   end
 
   def check_todo_tag(n1, n2)
-    return unless n2.todo?
+    return unless n2.marked_as_todo?
 
     if !n2.value?
       I18nFlow::InvalidTodoError.new(n2.full_key).set_location(n2)

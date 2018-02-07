@@ -42,8 +42,8 @@ private
   end
 
   def inspect_tag(node)
-    return 'TOOD:%s' % [node.todo_locales.join(',')] if node.todo?
-    return 'IGNORED' if node.ignored?
-    return 'ONLY:%s' % [node.valid_locales.join(',')] if node.only?
+    return 'TOOD:%s' % [node.todo_locales.join(',')] if node.marked_as_todo?
+    return 'IGNORED' if node.marked_as_ignored?
+    return 'ONLY:%s' % [node.valid_locales.join(',')] if node.marked_as_only?
   end
 end
