@@ -53,7 +53,16 @@ module I18nFlow::YamlAstProxy
       @node.value if @node.respond_to?(:value)
     end
 
+    def ==(other)
+      return false unless other.is_a?(self.class)
+      identity_data == other.identity_data
+    end
+
   private
+
+    def identity_data
+      scalar? ? value : indexed_object
+    end
 
     def indexed_object
       @indexed_object ||= I18nFlow::YamlAstProxy.create(@node, parent: @parent, scopes: scopes)
