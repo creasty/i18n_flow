@@ -1,5 +1,6 @@
 require 'psych'
 require_relative 'tree'
+require_relative 'yaml_ast_proxy'
 
 class I18nFlow::Parser
   def initialize
@@ -15,7 +16,11 @@ class I18nFlow::Parser
     @builder.root
   end
 
-  def tree(file_path: nil)
+  def tree(file_path: nil) # DEPRECATED
     I18nFlow::Tree.new(root, file_path: file_path).tree
+  end
+
+  def root_proxy
+    I18nFlow::YamlAstProxy.create(root)
   end
 end

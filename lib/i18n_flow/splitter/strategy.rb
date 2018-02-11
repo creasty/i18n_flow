@@ -1,6 +1,3 @@
-require 'psych'
-require_relative '../util'
-
 module I18nFlow::Splitter
   class Strategy
     DEFAULT_MAX_LEVEL      = 3
