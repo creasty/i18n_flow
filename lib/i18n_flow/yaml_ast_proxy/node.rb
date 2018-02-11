@@ -53,6 +53,10 @@ module I18nFlow::YamlAstProxy
       @node.value if @node.respond_to?(:value)
     end
 
+    def merge(other)
+      indexed_object.merge(other)
+    end
+
     def ==(other)
       return false unless other.is_a?(self.class)
       identity_data == other.identity_data

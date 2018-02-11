@@ -37,6 +37,12 @@ module I18nFlow::YamlAstProxy
       synchronize!
     end
 
+    def merge(other)
+      batch do
+        indexed_object.merge(other.indexed_object)
+      end
+    end
+
   private
 
     def cache

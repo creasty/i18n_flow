@@ -10,6 +10,10 @@ module I18nFlow::YamlAstProxy
       end
     end
 
+    def merge(other)
+      indexed_object.concat(other.indexed_object)
+    end
+
   private
 
     def indexed_object
