@@ -2,9 +2,7 @@ module I18nFlow
   extend self
 
   def config
-    @config ||= Configuration.new.tap do |c|
-      c.auto_configure!
-    end
+    @config ||= Configuration.new
   end
 
   def configure(&block)
