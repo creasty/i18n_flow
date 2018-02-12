@@ -1,6 +1,7 @@
 require_relative 'command_base'
 require_relative '../repository'
 require_relative '../validator/errors'
+require_relative '../validator/multiplexer'
 
 class I18nFlow::CLI
   class ValidateCommand < CommandBase
@@ -26,12 +27,14 @@ class I18nFlow::CLI
         puts
       end
 
-      puts 'Found %d %s in %d %s' % [
+      summary = 'Found %d %s in %d %s' % [
         error_count,
         error_count == 1 ? 'violation' : 'violations',
         file_count,
         file_count == 1 ? 'file' : 'files',
       ]
+
+      exit_with_message(error_count.zero? ? 0 : 1, summary)
     end
 
   private
