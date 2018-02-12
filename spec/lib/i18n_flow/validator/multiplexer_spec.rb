@@ -72,9 +72,9 @@ describe I18nFlow::Validator::Multiplexer do
     end
   end
 
-  describe '#trees' do
+  describe '#asts' do
     it 'should return a hash of tree indexed by (relative) file paths' do
-      expect(validator.trees.keys).to match_array([
+      expect(validator.asts.keys).to match_array([
         'models/user.en.yml',
         'models/user.ja.yml',
         'views/profiles/show.en.yml',
@@ -84,14 +84,14 @@ describe I18nFlow::Validator::Multiplexer do
     end
   end
 
-  describe '#trees_by_scope' do
+  describe '#asts_by_scope' do
     it 'should return a hash of tree indexed by scopes' do
-      expect(validator.trees_by_scope.keys).to match_array([
+      expect(validator.asts_by_scope.keys).to match_array([
         'models.user',
         'views.profiles.show',
       ])
-      expect(validator.trees_by_scope['models.user'].keys).to match_array(['en', 'ja'])
-      expect(validator.trees_by_scope['views.profiles.show'].keys).to match_array(['en', 'ja', 'fr'])
+      expect(validator.asts_by_scope['models.user'].keys).to match_array(['en', 'ja'])
+      expect(validator.asts_by_scope['views.profiles.show'].keys).to match_array(['en', 'ja', 'fr'])
     end
   end
 

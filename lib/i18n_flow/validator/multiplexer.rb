@@ -21,7 +21,7 @@ module I18nFlow::Validator
     def validate!
       @errors = nil
 
-      trees.each do |path, tree|
+      asts.each do |path, tree|
         single = Single.new(tree, filepath: path)
         single.validate!
         single.errors.each do |err|
@@ -29,7 +29,7 @@ module I18nFlow::Validator
         end
       end
 
-      trees_by_scope.each do |scope, locale_trees|
+      asts_by_scope.each do |scope, locale_trees|
         master_tree = locale_trees[@master_locale]
         next unless master_tree
 
@@ -37,7 +37,7 @@ module I18nFlow::Validator
         foreign_trees = locale_trees.values_at(*foreign_locales)
 
         foreign_locales.zip(foreign_trees).each do |(locale, foreign_tree)|
-          symmetry = Symmetry.new(master_tree.content[@master_locale], foreign_tree.content[locale])
+          symmetry = Symmetry.new(master_tree[@master_locale], foreign_tree[locale])
           symmetry.validate!
           symmetry.errors.each do |err|
             errors[err.file][err.key] = err
@@ -55,21 +55,21 @@ module I18nFlow::Validator
         .flat_map { |pattern| Dir.glob(@base_path.join(pattern)) }
     end
 
-    def trees
-      @trees ||= file_paths
+    def asts
+      @asts ||= file_paths
         .map { |path|
           rel_path = Pathname.new(path).relative_path_from(@base_path).to_s
           parser = I18nFlow::Parser.new(File.read(path), file_path: rel_path)
           parser.parse!
-          [rel_path, parser.tree]
+          [rel_path, parser.root_proxy]
         }
         .to_h
     end
 
-    def trees_by_scope
-      @trees_by_scope ||= Hash.new { |h, k| h[k] = {} }
+    def asts_by_scope
+      @asts_by_scope ||= Hash.new { |h, k| h[k] = {} }
         .tap { |h|
-          trees.each { |path, tree|
+          asts.each { |path, tree|
             locale, *scopes = I18nFlow::Util.filepath_to_scope(path)
             h[scopes.join('.')][locale] = tree
           }

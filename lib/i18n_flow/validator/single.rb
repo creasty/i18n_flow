@@ -28,7 +28,7 @@ module I18nFlow::Validator
 
     def validate_scope(tree, scopes:)
       scopes.each_with_index do |scope, i|
-        node = tree.content[scope]
+        node = tree[scope]
 
         if node.nil?
           full_key = scopes[0..i].join('.')
@@ -36,16 +36,16 @@ module I18nFlow::Validator
           break
         end
 
-        if tree.content.size > 1
+        if tree.mapping? && tree.size > 1
           parent_scopes = scopes[0...i]
-          (tree.content.keys - [scope]).each do |key|
+          (tree.keys - [scope]).each do |key|
             full_key = [*parent_scopes, key].join('.')
             errors << ExtraKeyError.new(full_key).set_location(node)
           end
           break
         end
 
-        if node.value?
+        if node.scalar?
           full_key = scopes[0..i].join('.')
           errors << InvalidTypeError.new(full_key).set_location(node)
           break

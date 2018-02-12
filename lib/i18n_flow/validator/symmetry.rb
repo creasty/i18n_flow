@@ -23,7 +23,7 @@ module I18nFlow::Validator
   private
 
     def validate_content(t1, t2)
-      keys = t1.content.keys | t2.content.keys
+      keys = t1.keys | t2.keys
 
       keys.each do |k|
         validate_node(t1, t2, k)
@@ -31,8 +31,8 @@ module I18nFlow::Validator
     end
 
     def validate_node(t1, t2, key)
-      n1 = t1.content[key]
-      n2 = t2.content[key]
+      n1 = t1[key]
+      n2 = t2[key]
 
       return if n1&.marked_as_ignored? || n2&.marked_as_ignored?
 
@@ -61,7 +61,7 @@ module I18nFlow::Validator
         return
       end
 
-      if n1.value?
+      if n1.scalar?
         check_args(n1, n2)&.tap do |err|
           errors << err
         end
@@ -90,7 +90,7 @@ module I18nFlow::Validator
 
     def check_type(n1, n2)
       return unless n1 && n2
-      return if n1.value? == n2.value?
+      return if n1.scalar? == n2.scalar?
 
       InvalidTypeError.new(n2.full_key).set_location(n2)
     end
@@ -109,7 +109,7 @@ module I18nFlow::Validator
     def check_todo_tag(n1, n2)
       return unless n2.marked_as_todo?
 
-      if !n2.value?
+      if !n2.scalar?
         InvalidTodoError.new(n2.full_key).set_location(n2)
       elsif n2.value != n1.value
         TodoContentError.new(n2.full_key,

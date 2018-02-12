@@ -5,16 +5,12 @@ module I18nFlow::YamlAstProxy
   class Mapping < Node
     extend Forwardable
 
-    def_delegators :indexed_object, :==
+    def_delegators :indexed_object, :==, :keys, :size
 
     def each
       indexed_object.each do |k, _|
         yield k, cache[k]
       end
-    end
-
-    def keys
-      indexed_object.keys
     end
 
     def values

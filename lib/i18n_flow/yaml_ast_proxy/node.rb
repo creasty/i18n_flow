@@ -19,10 +19,16 @@ module I18nFlow::YamlAstProxy
 
     def_delegators :indexed_object, :each
 
-    def initialize(node, parent: nil, scopes: [])
-      @node   = node
-      @parent = parent
-      @scopes = scopes
+    def initialize(
+      node,
+      parent:    nil,
+      scopes:    [],
+      file_path: nil
+    )
+      @node      = node
+      @parent    = parent
+      @scopes    = scopes
+      @file_path = file_path
 
       parse_tag!(node.tag)
     end
@@ -96,11 +102,19 @@ module I18nFlow::YamlAstProxy
     end
 
     def indexed_object
-      @indexed_object ||= I18nFlow::YamlAstProxy.create(node, parent: parent, scopes: scopes)
+      @indexed_object ||= I18nFlow::YamlAstProxy.create(node,
+        parent:    parent,
+        scopes:    scopes,
+        file_path: file_path,
+      )
     end
 
     def wrap(value, key:)
-      I18nFlow::YamlAstProxy.create(value, parent: node, scopes: [*scopes, key])
+      I18nFlow::YamlAstProxy.create(value,
+        parent:    node,
+        scopes:    [*scopes, key],
+        file_path: file_path,
+      )
     end
 
     def parse_tag!(tag)

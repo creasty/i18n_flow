@@ -2,7 +2,7 @@ require_relative 'node'
 
 module I18nFlow::YamlAstProxy
   class Sequence < Node
-    def_delegators :indexed_object, :==, :<<
+    def_delegators :indexed_object, :==, :<<, :size
 
     def each
       indexed_object.each.with_index do |o, i|

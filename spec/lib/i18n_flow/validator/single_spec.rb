@@ -7,7 +7,7 @@ describe I18nFlow::Validator::Single do
 
   describe '#validate' do
     it 'should pass if the filepath and the scope are perfectly matched' do
-      ast = parse_yaml(<<-YAML)
+      ast = parse_yaml_2(<<-YAML)
       en:
         foo:
           bar:
@@ -21,7 +21,7 @@ describe I18nFlow::Validator::Single do
     end
 
     it 'should fail if the scope is missing' do
-      ast = parse_yaml(<<-YAML)
+      ast = parse_yaml_2(<<-YAML)
       en:
         foo:
           key_1: text_1
@@ -36,7 +36,7 @@ describe I18nFlow::Validator::Single do
     end
 
     it 'should fail if its structure is invalid' do
-      ast = parse_yaml(<<-YAML)
+      ast = parse_yaml_2(<<-YAML)
       en:
         foo:
           bar: text_1
@@ -51,7 +51,7 @@ describe I18nFlow::Validator::Single do
     end
 
     it 'should fail if it contains extra keys' do
-      ast = parse_yaml(<<-YAML)
+      ast = parse_yaml_2(<<-YAML)
       en:
         foo:
           bar:
