@@ -28,15 +28,23 @@ module I18nFlow::Splitter
       scopes = chunk.scopes
       scopes = scopes[0...-1] if chunk.scalar?
 
-      scopes.each do |scope|
+      scopes.each.with_index do |scope, i|
+        next_scope = scopes[i + 1]
+        is_seq = next_scope ? next_scope&.is_a?(Integer) : chunk.sequence?
+
         node = parent[scope]
-        if node && !node.mapping?
+
+        if node && (!is_seq && !node.mapping? || is_seq && !node.sequence?)
           # TODO: should raise?
           return
         end
 
         unless node
-          parent[scope] = Psych::Nodes::Mapping.new
+          parent[scope] = if is_seq
+            Psych::Nodes::Sequence.new
+          else
+            Psych::Nodes::Mapping.new
+          end
           node = parent[scope]
         end
 
