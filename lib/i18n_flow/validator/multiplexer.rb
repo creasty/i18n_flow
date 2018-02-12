@@ -1,19 +1,19 @@
-require 'pathname'
-require_relative 'errors'
 require_relative 'single'
 require_relative 'symmetry'
 require_relative '../parser'
 
 module I18nFlow::Validator
   class Multiplexer
+    attr_reader :repository
+    attr_reader :valid_locales
+    attr_reader :master_locale
+
     def initialize(
-      base_path:,
-      glob_patterns:,
+      repository:,
       valid_locales:,
       master_locale:
     )
-      @base_path     = Pathname.new(base_path)
-      @glob_patterns = glob_patterns.to_a
+      @repository    = repository
       @valid_locales = valid_locales.to_a
       @master_locale = master_locale.to_s
     end
@@ -21,7 +21,7 @@ module I18nFlow::Validator
     def validate!
       @errors = nil
 
-      asts.each do |path, tree|
+      repository.asts_by_path.each do |path, tree|
         single = Single.new(tree, filepath: path)
         single.validate!
         single.errors.each do |err|
@@ -29,15 +29,15 @@ module I18nFlow::Validator
         end
       end
 
-      asts_by_scope.each do |scope, locale_trees|
-        master_tree = locale_trees[@master_locale]
+      repository.asts_by_scope.each do |scope, locale_trees|
+        master_tree = locale_trees[master_locale]
         next unless master_tree
 
-        foreign_locales = locale_trees.keys - [@master_locale]
+        foreign_locales = locale_trees.keys - [master_locale]
         foreign_trees = locale_trees.values_at(*foreign_locales)
 
         foreign_locales.zip(foreign_trees).each do |(locale, foreign_tree)|
-          symmetry = Symmetry.new(master_tree[@master_locale], foreign_tree[locale])
+          symmetry = Symmetry.new(master_tree[master_locale], foreign_tree[locale])
           symmetry.validate!
           symmetry.errors.each do |err|
             errors[err.file][err.key] = err
@@ -48,32 +48,6 @@ module I18nFlow::Validator
 
     def errors
       @errors ||= Hash.new { |h, k| h[k] = {} }
-    end
-
-    def file_paths
-      @file_paths ||= @glob_patterns
-        .flat_map { |pattern| Dir.glob(@base_path.join(pattern)) }
-    end
-
-    def asts
-      @asts ||= file_paths
-        .map { |path|
-          rel_path = Pathname.new(path).relative_path_from(@base_path).to_s
-          parser = I18nFlow::Parser.new(File.read(path), file_path: rel_path)
-          parser.parse!
-          [rel_path, parser.root_proxy]
-        }
-        .to_h
-    end
-
-    def asts_by_scope
-      @asts_by_scope ||= Hash.new { |h, k| h[k] = {} }
-        .tap { |h|
-          asts.each { |path, tree|
-            locale, *scopes = I18nFlow::Util.filepath_to_scope(path)
-            h[scopes.join('.')][locale] = tree
-          }
-        }
     end
   end
 end
