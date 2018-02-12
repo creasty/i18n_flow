@@ -1,10 +1,12 @@
 class I18nFlow::CLI
+  require_relative 'cli/validate_command'
   require_relative 'cli/version_command'
   require_relative 'cli/help_command'
 
   COMMANDS = {
-    'version' => VersionCommand,
-    'help'    => HelpCommand,
+    'validate' => ValidateCommand,
+    'version'  => VersionCommand,
+    'help'     => HelpCommand,
   }
 
   attr_reader :args
