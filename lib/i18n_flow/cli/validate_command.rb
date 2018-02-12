@@ -44,17 +44,38 @@ class I18nFlow::CLI
     def format_error(err)
       case err
       when I18nFlow::Validator::InvalidTypeError
-        <<-MESSAGE
-        unexpected structure
-        MESSAGE
+        if err.single?
+          <<-MESSAGE
+        the top-level scope must match with the file path
+        reason: unexpected structure
+          MESSAGE
+        else
+          <<-MESSAGE
+        the structure mismatches with the master file
+          MESSAGE
+        end
       when I18nFlow::Validator::MissingKeyError
-        <<-MESSAGE
+        if err.single?
+          <<-MESSAGE
+        the top-level scope must match with the file path
+        reason: missing key
+          MESSAGE
+        else
+          <<-MESSAGE
         missing key
-        MESSAGE
+          MESSAGE
+        end
       when I18nFlow::Validator::ExtraKeyError
-        <<-MESSAGE
+        if err.single?
+          <<-MESSAGE
+        the top-level scope must match with the file path
+        reason: extra key
+          MESSAGE
+        else
+          <<-MESSAGE
         extra key
-        MESSAGE
+          MESSAGE
+        end
       when I18nFlow::Validator::InvalidTodoError
         <<-MESSAGE
         todo cannot be tagged on mapping/sequence

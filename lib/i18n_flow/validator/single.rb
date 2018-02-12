@@ -32,7 +32,7 @@ module I18nFlow::Validator
 
         if node.nil?
           full_key = scopes[0..i].join('.')
-          errors << MissingKeyError.new(full_key).set_location(tree)
+          errors << MissingKeyError.new(full_key, single: true).set_location(tree)
           break
         end
 
@@ -40,14 +40,14 @@ module I18nFlow::Validator
           parent_scopes = scopes[0...i]
           (tree.keys - [scope]).each do |key|
             full_key = [*parent_scopes, key].join('.')
-            errors << ExtraKeyError.new(full_key).set_location(node)
+            errors << ExtraKeyError.new(full_key, single: true).set_location(node)
           end
           break
         end
 
         if node.scalar?
           full_key = scopes[0..i].join('.')
-          errors << InvalidTypeError.new(full_key).set_location(node)
+          errors << InvalidTypeError.new(full_key, single: true).set_location(node)
           break
         end
 

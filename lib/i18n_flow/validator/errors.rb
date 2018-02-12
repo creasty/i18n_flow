@@ -17,6 +17,10 @@ module I18nFlow::Validator
       [key]
     end
 
+    def single?
+      !!@single
+    end
+
     def set_location(node)
       @file = node.file_path
       @line = node.start_line
@@ -25,12 +29,24 @@ module I18nFlow::Validator
   end
 
   class InvalidTypeError < Error
+    def initialize(key, single: false)
+      super(key)
+      @single = single
+    end
   end
 
   class MissingKeyError < Error
+    def initialize(key, single: false)
+      super(key)
+      @single = single
+    end
   end
 
   class ExtraKeyError < Error
+    def initialize(key, single: false)
+      super(key)
+      @single = single
+    end
   end
 
   class InvalidTodoError < Error
