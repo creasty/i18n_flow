@@ -85,6 +85,10 @@ module I18nFlow::YamlAstProxy
       identity_data == other.identity_data
     end
 
+    def to_yaml
+      parent.to_yaml
+    end
+
   private
 
     def identity_data
