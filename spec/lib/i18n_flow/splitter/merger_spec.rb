@@ -67,8 +67,8 @@ describe I18nFlow::Splitter::Merger do
       en:
         map:
           foo_1: 'foo_1'
-          foo_2: 'foo_2'
           bar: 'bar_2'
+          foo_2: 'foo_2'
       YAML
 
       allow(merger).to receive(:chunks).and_return([
@@ -98,8 +98,8 @@ describe I18nFlow::Splitter::Merger do
       en:
         map:
           foo_1: 'foo_1'
-          foo_2: 'foo_2'
           bar: 'bar_2'
+          foo_2: 'foo_2'
       YAML
 
       allow(merger).to receive(:chunks).and_return([

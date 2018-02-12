@@ -22,7 +22,7 @@ module I18nFlow::YamlAstProxy
   end
 
   def self.new_root
-    doc = Psych::Nodes::Document.new
+    doc = Psych::Nodes::Document.new([], [], true)
     doc.children << Psych::Nodes::Mapping.new
     stream = Psych::Nodes::Stream.new
     stream.children << doc

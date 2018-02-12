@@ -12,7 +12,7 @@ module I18nFlow::Splitter
 
     def perform_merge!
       chunks.each do |chunk|
-        merge(chunk)
+        append_chunk(chunk)
       end
     end
 
@@ -22,8 +22,32 @@ module I18nFlow::Splitter
 
   private
 
-    def merge(chunk)
+    def append_chunk(chunk)
+      parent = root
 
+      scopes = chunk.scopes
+      scopes = scopes[0...-1] if chunk.scalar?
+
+      scopes.each do |scope|
+        node = parent[scope]
+        if node && !node.mapping?
+          # TODO: should raise?
+          return
+        end
+
+        unless node
+          parent[scope] = Psych::Nodes::Mapping.new
+          node = parent[scope]
+        end
+
+        parent = node
+      end
+
+      if chunk.scalar?
+        parent[chunk.scopes[-1]] = chunk.node
+      else
+        parent.merge!(chunk)
+      end
     end
   end
 end
