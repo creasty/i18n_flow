@@ -20,4 +20,21 @@ module I18nFlow::Util
     locale, *components = scopes
     [components.join('/'), locale, 'yml'].compact.reject(&:empty?).join('.')
   end
+
+  def find_file_upward(*file_names)
+    pwd  = Dir.pwd
+    base = Hash.new { |h, k| h[k] = pwd }
+    file = {}
+
+    while base.values.all? { |b| '.' != b && '/' != b }
+      file_names.each do |name|
+        file[name] = File.join(base[name], name)
+        base[name] = File.dirname(base[name])
+
+        return file[name] if File.exists?(file[name])
+      end
+    end
+
+    nil
+  end
 end
