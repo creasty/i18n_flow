@@ -16,6 +16,10 @@ module I18nFlow::YamlAstProxy
       indexed_object.concat(other.send(:indexed_object))
     end
 
+    def keys
+      (0...size).to_a
+    end
+
   private
 
     def indexed_object
