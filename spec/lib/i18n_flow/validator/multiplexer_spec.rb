@@ -1,6 +1,6 @@
-describe I18nFlow::Validator do
+describe I18nFlow::Validator::Multiplexer do
   let(:validator) do
-     I18nFlow::Validator.new(
+     I18nFlow::Validator::Multiplexer.new(
        base_path:     '/fixtures',
        glob_patterns: ['models/**/*.yml', 'views/**/*.yml'],
        valid_locales: %w[en ja fr],
@@ -97,7 +97,7 @@ describe I18nFlow::Validator do
 
   describe '#validate' do
     it 'should pass' do
-      validator.validate
+      validator.validate!
       expect(validator.errors).to eq({})
     end
 
@@ -112,11 +112,11 @@ describe I18nFlow::Validator do
       end
 
       it 'should fail' do
-        validator.validate
+        validator.validate!
         expect(validator.errors).to eq({
           'models/user.ja.yml' => {
-            'ja.models' => I18nFlow::MissingKeyError.new('ja.models'),
-            'ja.modulo' => I18nFlow::ExtraKeyError.new('ja.modulo'),
+            'ja.models' => I18nFlow::Validator::MissingKeyError.new('ja.models'),
+            'ja.modulo' => I18nFlow::Validator::ExtraKeyError.new('ja.modulo'),
           },
         })
       end
@@ -134,11 +134,11 @@ describe I18nFlow::Validator do
       end
 
       it 'should fail' do
-        validator.validate
+        validator.validate!
         expect(validator.errors).to eq({
           'views/profiles/show.ja.yml' => {
-            'ja.views.profiles.show.key_2' => I18nFlow::ExtraKeyError.new('ja.views.profiles.show.key_2'),
-            'ja.views.profiles.show.key_1' => I18nFlow::MissingKeyError.new('ja.views.profiles.show.key_1'),
+            'ja.views.profiles.show.key_2' => I18nFlow::Validator::ExtraKeyError.new('ja.views.profiles.show.key_2'),
+            'ja.views.profiles.show.key_1' => I18nFlow::Validator::MissingKeyError.new('ja.views.profiles.show.key_1'),
           },
         })
       end
