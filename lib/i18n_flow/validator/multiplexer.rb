@@ -50,10 +50,6 @@ module I18nFlow::Validator
       @errors ||= Hash.new { |h, k| h[k] = {} }
     end
 
-    def parser
-      @parser ||= I18nFlow::Parser.new
-    end
-
     def file_paths
       @file_paths ||= @glob_patterns
         .flat_map { |pattern| Dir.glob(@base_path.join(pattern)) }
@@ -62,9 +58,10 @@ module I18nFlow::Validator
     def trees
       @trees ||= file_paths
         .map { |path|
-          File.open(path) { |f| parser.parse(f.read) }
           rel_path = Pathname.new(path).relative_path_from(@base_path).to_s
-          [rel_path, parser.tree(file_path: rel_path)]
+          parser = I18nFlow::Parser.new(File.read(path), file_path: rel_path)
+          parser.parse!
+          [rel_path, parser.tree]
         }
         .to_h
     end
