@@ -5,13 +5,13 @@ describe I18nFlow::Splitter::Merger do
 
   describe '#perform_merge!' do
     it 'should append root chunks' do
-      ast_1 = parse_yaml_2(<<-YAML)
+      ast_1 = parse_yaml(<<-YAML)
       en:
         map:
           foo_1: 'foo_1'
           bar_1: 'bar_1'
       YAML
-      result = parse_yaml_2(<<-YAML)
+      result = parse_yaml(<<-YAML)
       en:
         map:
           foo_1: 'foo_1'
@@ -28,13 +28,13 @@ describe I18nFlow::Splitter::Merger do
     end
 
     it 'should append partial chunks' do
-      ast_1 = parse_yaml_2(<<-YAML)
+      ast_1 = parse_yaml(<<-YAML)
       en:
         map:
           foo_1: 'foo_1'
           bar_1: 'bar_1'
       YAML
-      result = parse_yaml_2(<<-YAML)
+      result = parse_yaml(<<-YAML)
       en:
         map:
           foo_1: 'foo_1'
@@ -51,19 +51,19 @@ describe I18nFlow::Splitter::Merger do
     end
 
     it 'should merge root chunks' do
-      ast_1 = parse_yaml_2(<<-YAML)
+      ast_1 = parse_yaml(<<-YAML)
       en:
         map:
           foo_1: 'foo_1'
           bar: 'bar_1'
       YAML
-      ast_2 = parse_yaml_2(<<-YAML)
+      ast_2 = parse_yaml(<<-YAML)
       en:
         map:
           foo_2: 'foo_2'
           bar: 'bar_2'
       YAML
-      result = parse_yaml_2(<<-YAML)
+      result = parse_yaml(<<-YAML)
       en:
         map:
           foo_1: 'foo_1'
@@ -82,19 +82,19 @@ describe I18nFlow::Splitter::Merger do
     end
 
     it 'should merge partial mapping chunks' do
-      ast_1 = parse_yaml_2(<<-YAML)
+      ast_1 = parse_yaml(<<-YAML)
       en:
         map:
           foo_1: 'foo_1'
           bar: 'bar_1'
       YAML
-      ast_2 = parse_yaml_2(<<-YAML)
+      ast_2 = parse_yaml(<<-YAML)
       en:
         map:
           foo_2: 'foo_2'
           bar: 'bar_2'
       YAML
-      result = parse_yaml_2(<<-YAML)
+      result = parse_yaml(<<-YAML)
       en:
         map:
           foo_1: 'foo_1'
@@ -114,19 +114,19 @@ describe I18nFlow::Splitter::Merger do
     end
 
     it 'should merge partial sequence chunks' do
-      ast_1 = parse_yaml_2(<<-YAML)
+      ast_1 = parse_yaml(<<-YAML)
       en:
         seq:
           - 'seq_1_1'
           - 'seq_1_2'
       YAML
-      ast_2 = parse_yaml_2(<<-YAML)
+      ast_2 = parse_yaml(<<-YAML)
       en:
         seq:
           - 'seq_2_1'
           - 'seq_2_2'
       YAML
-      result = parse_yaml_2(<<-YAML)
+      result = parse_yaml(<<-YAML)
       en:
         seq:
           - 'seq_1_1'

@@ -2,12 +2,6 @@ module UtilMacro
   def parse_yaml(yaml)
     parser = I18nFlow::Parser.new(yaml)
     parser.parse!
-    parser.tree
-  end
-
-  def parse_yaml_2(yaml)
-    parser = I18nFlow::Parser.new(yaml)
-    parser.parse!
     parser.root_proxy
   end
 

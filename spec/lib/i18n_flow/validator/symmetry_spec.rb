@@ -6,13 +6,13 @@ describe I18nFlow::Validator::Symmetry do
 
   describe '#validate' do
     it 'should pass if the given trees are completely the same' do
-      ast_1 = parse_yaml_2(<<-YAML)['en']
+      ast_1 = parse_yaml(<<-YAML)['en']
       en:
         key_1: text_1
         foo:
           key_2: text_2
       YAML
-      ast_2 = parse_yaml_2(<<-YAML)['ja']
+      ast_2 = parse_yaml(<<-YAML)['ja']
       ja:
         key_1: text_1
         foo:
@@ -28,12 +28,12 @@ describe I18nFlow::Validator::Symmetry do
 
     context 'asymmetric key' do
       it 'should detect' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           key_3: text_3
@@ -50,13 +50,13 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should detect on nested node' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           foo:
             key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           foo:
@@ -74,12 +74,12 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should suppress an error on the ignored node (value)' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           key_3: !ignore text_3
@@ -95,13 +95,13 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should suppress an error on the ignored node (map)' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           foo:
             key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           foo: !ignore
@@ -118,12 +118,12 @@ describe I18nFlow::Validator::Symmetry do
 
     context 'type mismatch' do
       it 'should detect' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           key_2:
@@ -140,13 +140,13 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should detect on nested node' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           foo:
             key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           foo:
@@ -164,12 +164,12 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'suppress an error on the ignored node' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           key_2: !ignore
@@ -184,13 +184,13 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'suppress an error on the ignored node (outer map)' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           foo:
             key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           foo: !ignore
@@ -208,12 +208,12 @@ describe I18nFlow::Validator::Symmetry do
 
     context '!only tag' do
       it 'should pass if the asymmetric node is tagged with its locale (value)' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           key_2: text_2
@@ -228,12 +228,12 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should pass if the asymmetric node is tagged with its locale (map)' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           key_2: text_2
@@ -249,12 +249,12 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should pass if the symmetric node is tagged with both locales' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           key_2: !only:en,ja text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           key_2: !only:en,ja text_2
@@ -268,12 +268,12 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should fail if the symmetric node is tagged with an one-side locale' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           key_2: !only:ja text_2
@@ -289,12 +289,12 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should fail if the asymmetric node is tagged with a different locale' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           key_2: text_2
@@ -312,12 +312,12 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should fail if the symmetric node is tagged with a different locale' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           key_2: !only:en text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           key_2: text_2
@@ -335,12 +335,12 @@ describe I18nFlow::Validator::Symmetry do
 
     context '!todo tag' do
       it 'should pass if the value is marked as todo' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           key_2: !todo text_2
@@ -354,13 +354,13 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should fail if the tag is on a non-value node' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           foo: !todo
             key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           foo: !todo
@@ -378,12 +378,12 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should fail if texts are different' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
           key_2: text_2
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
           key_2: !todo text_9
@@ -401,11 +401,11 @@ describe I18nFlow::Validator::Symmetry do
 
     context 'args' do
       it 'should pass if the arguments are exclusive and exhaustive' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: '%{arg_1} %{arg_2}'
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: '%{arg_1} %{arg_2}'
         YAML
@@ -418,11 +418,11 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should be insensitive of the order of arguments' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: '%{arg_1} %{arg_2}'
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: '%{arg_2} %{arg_1}'
         YAML
@@ -435,11 +435,11 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should ignore confusing args' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: 'foo %%{arg_1}'
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: 'foo'
         YAML
@@ -452,11 +452,11 @@ describe I18nFlow::Validator::Symmetry do
       end
 
       it 'should detect unbalanced arguments' do
-        ast_1 = parse_yaml_2(<<-YAML)['en']
+        ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: 'foo %{arg_1}'
         YAML
-        ast_2 = parse_yaml_2(<<-YAML)['ja']
+        ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: 'foo %{arg_2}'
         YAML
