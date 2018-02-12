@@ -25,31 +25,30 @@ module I18nFlow::Splitter
     def append_chunk(chunk)
       parent = root
 
-      scopes = chunk.scopes
-      scopes = scopes[0...-1] if chunk.scalar?
+      chunk.scopes[0..(chunk.scalar? ? -2 : -1)]
+        .each
+        .with_index do |scope, i|
+          next_scope = chunk.scopes[i + 1]
+          is_seq = next_scope ? next_scope&.is_a?(Integer) : chunk.sequence?
 
-      scopes.each.with_index do |scope, i|
-        next_scope = scopes[i + 1]
-        is_seq = next_scope ? next_scope&.is_a?(Integer) : chunk.sequence?
-
-        node = parent[scope]
-
-        if node && (!is_seq && !node.mapping? || is_seq && !node.sequence?)
-          # TODO: should raise?
-          return
-        end
-
-        unless node
-          parent[scope] = if is_seq
-            Psych::Nodes::Sequence.new
-          else
-            Psych::Nodes::Mapping.new
-          end
           node = parent[scope]
-        end
 
-        parent = node
-      end
+          if node && (!is_seq && !node.mapping? || is_seq && !node.sequence?)
+            # TODO: should raise?
+            return
+          end
+
+          unless node
+            parent[scope] = if is_seq
+              Psych::Nodes::Sequence.new
+            else
+              Psych::Nodes::Mapping.new
+            end
+            node = parent[scope]
+          end
+
+          parent = node
+        end
 
       if chunk.scalar?
         parent[chunk.scopes[-1]] = chunk.node
