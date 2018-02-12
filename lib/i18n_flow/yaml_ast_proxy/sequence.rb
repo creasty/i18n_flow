@@ -17,7 +17,7 @@ module I18nFlow::YamlAstProxy
   private
 
     def indexed_object
-      @node.children
+      node.children
     end
   end
 end

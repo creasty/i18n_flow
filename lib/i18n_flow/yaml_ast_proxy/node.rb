@@ -46,11 +46,11 @@ module I18nFlow::YamlAstProxy
     end
 
     def scalar?
-      @node.is_a?(Psych::Nodes::Scalar)
+      node.is_a?(Psych::Nodes::Scalar)
     end
 
     def value
-      @node.value if @node.respond_to?(:value)
+      node.value if node.respond_to?(:value)
     end
 
     def merge(other)
@@ -69,11 +69,11 @@ module I18nFlow::YamlAstProxy
     end
 
     def indexed_object
-      @indexed_object ||= I18nFlow::YamlAstProxy.create(@node, parent: @parent, scopes: scopes)
+      @indexed_object ||= I18nFlow::YamlAstProxy.create(node, parent: parent, scopes: scopes)
     end
 
     def wrap(value, key:)
-      I18nFlow::YamlAstProxy.create(value, parent: @node, scopes: [*@scopes, key])
+      I18nFlow::YamlAstProxy.create(value, parent: node, scopes: [*scopes, key])
     end
 
     def parse_tag!(tag)

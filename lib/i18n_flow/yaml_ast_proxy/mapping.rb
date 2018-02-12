@@ -50,7 +50,7 @@ module I18nFlow::YamlAstProxy
     end
 
     def indexed_object
-      @indexed_object ||= @node.children
+      @indexed_object ||= node.children
         .each_slice(2)
         .map { |k, v| [k.value, v] }
         .to_h
@@ -60,7 +60,7 @@ module I18nFlow::YamlAstProxy
       return if @locked
 
       children = indexed_object.flat_map { |k, v| [Psych::Nodes::Scalar.new(k), v] }
-      @node.children.replace(children)
+      node.children.replace(children)
     end
   end
 end
