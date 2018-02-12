@@ -53,8 +53,31 @@ module I18nFlow::YamlAstProxy
       node.value if node.respond_to?(:value)
     end
 
-    def merge(other)
-      indexed_object.merge(other)
+    def merge!(other)
+      return unless other&.is_a?(Node)
+
+      if scalar? && other.scalar?
+        node.value = other.value
+        return
+      end
+
+      if !scalar? && !other.scalar?
+        batch do
+          other.batch do
+            other.each do |k, rhs|
+              if (lhs = self[k])
+                lhs.merge!(rhs)
+              else
+                self[k] = rhs.node
+              end
+            end
+          end
+        end
+      end
+    end
+
+    def batch
+      yield
     end
 
     def ==(other)

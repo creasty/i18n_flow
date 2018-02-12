@@ -10,8 +10,10 @@ module I18nFlow::YamlAstProxy
       end
     end
 
-    def merge(other)
-      indexed_object.concat(other.indexed_object)
+    def merge!(other)
+      return unless other&.is_a?(Sequence)
+
+      indexed_object.concat(other.send(:indexed_object))
     end
 
   private

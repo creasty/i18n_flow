@@ -37,9 +37,19 @@ module I18nFlow::YamlAstProxy
       synchronize!
     end
 
-    def merge(other)
+    def merge!(other)
+      return unless other&.is_a?(Mapping)
+
       batch do
-        indexed_object.merge(other.indexed_object)
+        other.batch do
+          other.each do |k, rhs|
+            if (lhs = self[k])
+              lhs.merge!(rhs)
+            else
+              self[k] = rhs.node
+            end
+          end
+        end
       end
     end
 

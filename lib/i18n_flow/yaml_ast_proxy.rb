@@ -6,6 +6,8 @@ require_relative 'yaml_ast_proxy/sequence'
 module I18nFlow::YamlAstProxy
   def self.create(node, parent: nil, scopes: [])
     case node
+    when NilClass
+      nil
     when I18nFlow::YamlAstProxy::Node
       node
     when Psych::Nodes::Stream, Psych::Nodes::Document
