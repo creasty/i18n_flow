@@ -37,4 +37,21 @@ module I18nFlow::Util
 
     nil
   end
+
+  def parse_options(args)
+    options = {}
+
+    args.reject! do |arg|
+      case arg
+      when /^-([a-z0-9])$/i, /^--([a-z0-9][a-z0-9-]*)$/i
+        options[$1] = true
+      when /^--([a-z0-9][a-z0-9-]*)=(.+)$/i
+        options[$1] = $2
+      else
+        break
+      end
+    end
+
+    options
+  end
 end

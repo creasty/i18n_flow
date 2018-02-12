@@ -147,4 +147,48 @@ describe I18nFlow::Util do
       end
     end
   end
+
+  describe '.parse_options' do
+    it 'should parse short options' do
+      args = ['-a', '-b']
+      options = I18nFlow::Util.parse_options(args)
+
+      expect(args).to be_empty
+      expect(options).to be_a(Hash)
+      expect(options['a']).to be(true)
+      expect(options['b']).to be(true)
+    end
+
+    it 'should parse long options' do
+      args = ['--long-a', '--long-b']
+      options = I18nFlow::Util.parse_options(args)
+
+      expect(args).to be_empty
+      expect(options).to be_a(Hash)
+      expect(options['long-a']).to be(true)
+      expect(options['long-b']).to be(true)
+    end
+
+    it 'should parse long options with value' do
+      args = ['--long-a=value-of-a', '--long-b=value-of-b']
+      options = I18nFlow::Util.parse_options(args)
+
+      expect(args).to be_empty
+      expect(options).to be_a(Hash)
+      expect(options['long-a']).to eq('value-of-a')
+      expect(options['long-b']).to eq('value-of-b')
+    end
+
+    it 'should not parse options after once non-option args appears' do
+      args = ['-a', '--long-a', 'non-option', '--long-b=value-of-b']
+      options = I18nFlow::Util.parse_options(args)
+
+      expect(args).to eq(['non-option', '--long-b=value-of-b'])
+      expect(options).to be_a(Hash)
+      expect(options['a']).to be(true)
+      expect(options['long-a']).to be(true)
+      expect(options['long-b']).to be_nil
+    end
+  end
+
 end
