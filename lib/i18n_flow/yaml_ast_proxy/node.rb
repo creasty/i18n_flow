@@ -6,7 +6,7 @@ module I18nFlow::YamlAstProxy
     extend Forwardable
     include NodeMetaData
 
-    TAG_IGNORE = '!ignore'
+    TAG_IGNORE = /^!ignore:(args|key)$/
     TAG_TODO   = /^!todo(?::([,a-zA-Z_-]+))?$/
     TAG_ONLY   = /^!only:([,a-zA-Z_-]+)$/
 
@@ -16,6 +16,7 @@ module I18nFlow::YamlAstProxy
     attr_reader :file_path
     attr_reader :todo_locales
     attr_reader :valid_locales
+    attr_reader :ignored_violation
 
     def_delegators :indexed_object, :each
 
@@ -133,6 +134,7 @@ module I18nFlow::YamlAstProxy
         @valid_locales = $1.split(',').freeze
       when TAG_IGNORE
         @tag = :ignore
+        @ignored_violation = $1.freeze.to_sym
       end
     end
   end

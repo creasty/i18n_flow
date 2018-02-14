@@ -82,7 +82,7 @@ describe I18nFlow::Validator::Symmetry do
         ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
-          key_3: !ignore text_3
+          key_3: !ignore:key text_3
         YAML
 
         allow(validator).to receive(:ast_1).and_return(ast_1)
@@ -104,7 +104,7 @@ describe I18nFlow::Validator::Symmetry do
         ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
-          foo: !ignore
+          foo: !ignore:key
             key_3: text_3
         YAML
 
@@ -172,7 +172,7 @@ describe I18nFlow::Validator::Symmetry do
         ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
-          key_2: !ignore
+          key_2: !ignore:key
             one: text_2
         YAML
 
@@ -193,7 +193,7 @@ describe I18nFlow::Validator::Symmetry do
         ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
-          foo: !ignore
+          foo: !ignore:key
             key_2:
               one: text_2
         YAML
@@ -471,6 +471,23 @@ describe I18nFlow::Validator::Symmetry do
             actual: ['arg_2'],
           )
         ])
+      end
+
+      it 'should suppress an error on the ignored node' do
+        ast_1 = parse_yaml(<<-YAML)['en']
+        en:
+          key_1: 'foo %{arg_1}'
+        YAML
+        ast_2 = parse_yaml(<<-YAML)['ja']
+        ja:
+          key_1: !ignore:args 'foo %{arg_2}'
+        YAML
+
+        allow(validator).to receive(:ast_1).and_return(ast_1)
+        allow(validator).to receive(:ast_2).and_return(ast_2)
+        validator.validate!
+
+        expect(validator.errors).to eq([])
       end
     end
   end

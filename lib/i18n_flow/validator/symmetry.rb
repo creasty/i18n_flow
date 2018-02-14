@@ -34,8 +34,6 @@ module I18nFlow::Validator
       n1 = t1[key]
       n2 = t2[key]
 
-      return if n1&.marked_as_ignored? || n2&.marked_as_ignored?
-
       check_only_tag(n1, n2)&.tap do |err|
         errors << err if err
         return
@@ -47,7 +45,7 @@ module I18nFlow::Validator
       end
 
       check_asymmetric_key(n1, n2, t2)&.tap do |err|
-        errors << err
+        errors << err if err
         return
       end
 
@@ -96,6 +94,7 @@ module I18nFlow::Validator
     end
 
     def check_asymmetric_key(n1, n2, t2)
+      return false if n1&.ignored_violation == :key || n2&.ignored_violation == :key
       return if n1 && n2
 
       if n1
@@ -120,6 +119,8 @@ module I18nFlow::Validator
     end
 
     def check_args(n1, n2)
+      return if n1.ignored_violation == :args || n2.ignored_violation == :args
+
       args_1 = I18nFlow::Util.extract_args(n1.value)
       args_2 = I18nFlow::Util.extract_args(n2.value)
 

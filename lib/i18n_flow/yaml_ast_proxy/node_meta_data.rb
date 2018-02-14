@@ -37,10 +37,6 @@ module I18nFlow::YamlAstProxy
       @tag == :todo
     end
 
-    def marked_as_ignored?
-      @tag == :ignore
-    end
-
     def marked_as_only?
       @tag == :only && valid_locales.any?
     end
