@@ -434,6 +434,23 @@ describe I18nFlow::Validator::Symmetry do
         expect(validator.errors).to eq([])
       end
 
+      it 'should be insensitive of the duplicate of arguments' do
+        ast_1 = parse_yaml(<<-YAML)['en']
+        en:
+          key_1: '%{arg_1} %{arg_1}'
+        YAML
+        ast_2 = parse_yaml(<<-YAML)['ja']
+        ja:
+          key_1: '%{arg_1}'
+        YAML
+
+        allow(validator).to receive(:ast_1).and_return(ast_1)
+        allow(validator).to receive(:ast_2).and_return(ast_2)
+        validator.validate!
+
+        expect(validator.errors).to eq([])
+      end
+
       it 'should ignore confusing args' do
         ast_1 = parse_yaml(<<-YAML)['en']
         en:

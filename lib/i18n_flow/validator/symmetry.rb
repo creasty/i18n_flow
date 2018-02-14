@@ -121,8 +121,8 @@ module I18nFlow::Validator
     def check_args(n1, n2)
       return if n1.ignored_violation == :args || n2.ignored_violation == :args
 
-      args_1 = I18nFlow::Util.extract_args(n1.value)
-      args_2 = I18nFlow::Util.extract_args(n2.value)
+      args_1 = I18nFlow::Util.extract_args(n1.value).uniq
+      args_2 = I18nFlow::Util.extract_args(n2.value).uniq
 
       return if args_1 == args_2
 
