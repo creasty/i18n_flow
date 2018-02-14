@@ -8,14 +8,12 @@ module I18nFlow::YamlAstProxy
 
     TAG_IGNORE = /^!ignore:(args|key)$/
     TAG_TODO   = /^!todo(?::([,a-zA-Z_-]+))?$/
-    TAG_ONLY   = /^!only:([,a-zA-Z_-]+)$/
+    TAG_ONLY   = /^!only(?::([,a-zA-Z_-]+))?$/
 
     attr_reader :node
     attr_reader :parent
     attr_reader :scopes
     attr_reader :file_path
-    attr_reader :todo_locales
-    attr_reader :valid_locales
     attr_reader :ignored_violation
 
     def_delegators :indexed_object, :each
@@ -43,22 +41,6 @@ module I18nFlow::YamlAstProxy
       indexed_object[key] = value
     end
     alias []= set
-
-    def sequence?
-      is_a?(Sequence)
-    end
-
-    def mapping?
-      is_a?(Mapping)
-    end
-
-    def scalar?
-      node.is_a?(Psych::Nodes::Scalar)
-    end
-
-    def alias?
-      node.is_a?(Psych::Nodes::Alias)
-    end
 
     def value
       node.value if node.respond_to?(:value)
@@ -131,7 +113,7 @@ module I18nFlow::YamlAstProxy
         @todo_locales = $1.to_s.split(',').freeze
       when TAG_ONLY
         @tag = :only
-        @valid_locales = $1.split(',').freeze
+        @valid_locales = $1.to_s.split(',').freeze
       when TAG_IGNORE
         @tag = :ignore
         @ignored_violation = $1.freeze.to_sym

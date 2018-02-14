@@ -29,6 +29,22 @@ module I18nFlow::YamlAstProxy
       node.anchor
     end
 
+    def sequence?
+      is_a?(Sequence)
+    end
+
+    def mapping?
+      is_a?(Mapping)
+    end
+
+    def scalar?
+      node.is_a?(Psych::Nodes::Scalar)
+    end
+
+    def alias?
+      node.is_a?(Psych::Nodes::Alias)
+    end
+
     def has_anchor?
       !!anchor
     end
@@ -38,7 +54,7 @@ module I18nFlow::YamlAstProxy
     end
 
     def marked_as_only?
-      @tag == :only && valid_locales.any?
+      @tag == :only
     end
 
     def todo_locales
@@ -50,7 +66,7 @@ module I18nFlow::YamlAstProxy
     end
 
     def valid_locale?
-      !marked_as_only? || valid_locales.include?(locale)
+      valid_locales.empty? || valid_locales.include?(locale)
     end
 
   private

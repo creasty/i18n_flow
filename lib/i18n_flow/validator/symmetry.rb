@@ -39,11 +39,6 @@ module I18nFlow::Validator
         return
       end
 
-      check_only_tag(n2, n1)&.tap do |err|
-        errors << err if err
-        return
-      end
-
       check_asymmetric_key(n1, n2, t2)&.tap do |err|
         errors << err if err
         return
@@ -69,21 +64,45 @@ module I18nFlow::Validator
     end
 
     def check_only_tag(n1, n2)
-      return unless n1&.marked_as_only?
+      return unless n1&.marked_as_only? || n2&.marked_as_only?
 
-      if !n1.valid_locale?
-        InvalidLocaleError.new(n1.full_key,
+      if n1 && !n1.valid_locale?
+        return InvalidLocaleError.new(n1.full_key,
           expect: n1.valid_locales,
           actual: n1.locale,
         ).set_location(n1)
-      elsif n2&.locale && !n1.valid_locales.include?(n2.locale)
-        InvalidLocaleError.new(n2.full_key,
+      end
+
+      if n2 && !n2.valid_locale?
+        return InvalidLocaleError.new(n2.full_key,
+          expect: n2.valid_locales,
+          actual: n2.locale,
+        ).set_location(n2)
+      end
+
+      if n1 && !n2 && n1.marked_as_only?
+        return false
+      end
+
+      if !n1 && n2 && n2.marked_as_only?
+        return false
+      end
+
+      if n1 && n2 && n1.valid_locales.any? && !n1.valid_locales.include?(n2.locale)
+        return InvalidLocaleError.new(n2.full_key,
           expect: n1.valid_locales,
           actual: n2.locale,
         ).set_location(n2)
-      else
-        false
       end
+
+      if n1 && n2 && n2.valid_locales.any? && !n2.valid_locales.include?(n1.locale)
+        return InvalidLocaleError.new(n1.full_key,
+          expect: n2.valid_locales,
+          actual: n1.locale,
+        ).set_location(n1)
+      end
+
+      false
     end
 
     def check_type(n1, n2)
