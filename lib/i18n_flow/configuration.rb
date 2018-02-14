@@ -60,6 +60,8 @@ class I18nFlow::Configuration
     glob_patterns
     master_locale
     valid_locales
+    split_max_level
+    split_line_threshold
   ])
 
   validate :base_path, 'need to be an absolute path' do
@@ -90,12 +92,22 @@ class I18nFlow::Configuration
     valid_locales.include?(master_locale)
   end
 
+  validate :split_max_level, 'must be set' do
+    !split_max_level.nil?
+  end
+
+  validate :split_line_threshold, 'must be set' do
+    !split_line_threshold.nil?
+  end
+
   def initialize
     update(validate: false) do |c|
-      c.base_path     = File.expand_path('.')
-      c.glob_patterns = ['*.en.yml']
-      c.master_locale = 'en'
-      c.valid_locales = ['en']
+      c.base_path            = File.expand_path('.')
+      c.glob_patterns        = ['*.en.yml']
+      c.master_locale        = 'en'
+      c.valid_locales        = ['en']
+      c.split_max_level      = 3
+      c.split_line_threshold = 50
     end
   end
 
@@ -123,6 +135,18 @@ class I18nFlow::Configuration
     @valid_locales = locales&.tap do |v|
       break unless v.is_a?(Array)
       break v.map(&:to_s)
+    end
+  end
+
+  def split_max_level=(level)
+    @split_max_level = level&.tap do |v|
+      break unless v.is_a?(Integer)
+    end
+  end
+
+  def split_line_threshold=(threshold)
+    @split_line_threshold = threshold&.tap do |v|
+      break unless v.is_a?(Integer)
     end
   end
 

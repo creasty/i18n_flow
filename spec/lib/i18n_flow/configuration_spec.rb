@@ -10,6 +10,8 @@ describe I18nFlow::Configuration do
         glob_patterns
         valid_locales
         master_locale
+        split_max_level
+        split_line_threshold
       ]
     end
 
@@ -166,6 +168,42 @@ describe I18nFlow::Configuration do
 
       it 'should not raise if eligible' do
         configuration.valid_locales = [:en]
+
+        expect {
+          configuration.validate!
+        }.not_to raise_error
+      end
+    end
+
+    context 'split_max_level' do
+      it 'should raise an error if it is not an integer' do
+        configuration.split_max_level = 'foo'
+
+        expect {
+          configuration.validate!
+        }.to raise_error(/split_max_level/)
+      end
+
+      it 'should not raise if it is an integer' do
+        configuration.split_max_level = 123
+
+        expect {
+          configuration.validate!
+        }.not_to raise_error
+      end
+    end
+
+    context 'split_line_threshold' do
+      it 'should raise an error if it is not an integer' do
+        configuration.split_line_threshold = 'foo'
+
+        expect {
+          configuration.validate!
+        }.to raise_error(/split_line_threshold/)
+      end
+
+      it 'should not raise if it is an integer' do
+        configuration.split_line_threshold = 123
 
         expect {
           configuration.validate!

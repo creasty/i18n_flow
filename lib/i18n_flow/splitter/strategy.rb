@@ -4,19 +4,18 @@ module I18nFlow::Splitter
     DEFAULT_LINE_THRESHOLD = 50
 
     def initialize(
-      px,
+      ast,
       max_level:      DEFAULT_MAX_LEVEL,
       line_threshold: DEFAULT_LINE_THRESHOLD
     )
-      @px             = px
+      @ast            = ast
       @max_level      = max_level
       @line_threshold = line_threshold
     end
 
-    def split
+    def split!
       @chunks = nil
-      traverse(@px, level: 0)
-      chunks
+      traverse(@ast, level: 0)
     end
 
     def chunks
@@ -25,11 +24,11 @@ module I18nFlow::Splitter
 
   private
 
-    def traverse(px, level:)
-      return if px.scalar?
+    def traverse(node, level:)
+      return if node.scalar?
 
-      if level > 0 && px.mapping?
-        others, mappings = px.values.partition(&:scalar?)
+      if level > 0 && node.mapping?
+        others, mappings = node.values.partition(&:scalar?)
 
         others.each do |n|
           add_chunk(n, delta_level: -2)
@@ -43,25 +42,25 @@ module I18nFlow::Splitter
         end
 
         if level >= @max_level
-          add_chunk(px)
+          add_chunk(node)
           return
         end
       end
 
-      if px.sequence?
-        add_chunk(px, delta_level: -2)
+      if node.sequence?
+        add_chunk(node, delta_level: -2)
         return
       end
 
-      px.each do |_, v|
+      node.each do |_, v|
         traverse(v, level: level + 1)
       end
     end
 
-    def add_chunk(px, delta_level: 0)
-      level = [px.scopes.size + delta_level, 1].max
-      file_scopes = px.scopes[0...level]
-      chunks[file_scopes] << px
+    def add_chunk(node, delta_level: 0)
+      level = [node.scopes.size + delta_level, 1].max
+      file_scopes = node.scopes[0...level]
+      chunks[file_scopes] << node
     end
   end
 end
