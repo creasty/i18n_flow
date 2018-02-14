@@ -1,0 +1,13 @@
+sudo: false
+language: ruby
+rvm: 2.4.2
+
+branches:
+  only:
+    - master # Affects only branch builds; pull requests will still be built on any branch
+
+install:
+  - bundle install
+
+script:
+  - bundle exec rspec
