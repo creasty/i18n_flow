@@ -61,7 +61,7 @@ module I18nFlow::Validator
         return
       end
 
-      if n1.scalar?
+      if n1.scalar? || n1.alias?
         check_args(n1, n2)&.tap do |err|
           errors << err
         end

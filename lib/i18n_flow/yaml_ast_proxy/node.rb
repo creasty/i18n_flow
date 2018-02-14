@@ -52,7 +52,11 @@ module I18nFlow::YamlAstProxy
     end
 
     def scalar?
-      node.is_a?(Psych::Nodes::Scalar) || node.is_a?(Psych::Nodes::Alias)
+      node.is_a?(Psych::Nodes::Scalar)
+    end
+
+    def alias?
+      node.is_a?(Psych::Nodes::Alias)
     end
 
     def value

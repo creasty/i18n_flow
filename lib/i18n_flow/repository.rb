@@ -1,4 +1,6 @@
 require 'pathname'
+require_relative 'parser'
+require_relative 'util'
 
 class I18nFlow::Repository
   def initialize(
