@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Yuki Iwanaga']
   spec.email         = ['yuki@creasty.com']
 
-  spec.summary       = %q{Efficient and maintainable i18n workflow for real globalized applications}
-  spec.description   = %q{Efficient and maintainable i18n workflow for real globalized applications}
+  spec.summary       = %q{Manage translation status in yaml file}
+  spec.description   = %q{Manage translation status in yaml file}
   spec.homepage      = 'https://github.com/creasty/i18n_flow'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
