@@ -3,7 +3,7 @@ require_relative 'command_base'
 class I18nFlow::CLI
   class HelpCommand < CommandBase
     TEXT = <<-HELP
-Efficient and maintainable i18n workflow for real globalized applications
+Manage translation status in yaml file
 
 Usage:
     i18n_flow COMMAND [args...]
@@ -11,10 +11,14 @@ Usage:
 
 Options:
     -v, --version    Show version
+    -h               Show help
 
 Commands:
-    version
-    help
+    lint       Validate files
+    copy       Copy translations and mark as todo
+    split      Split a file into proper-sized files
+    version    Show version
+    help       Show help
     HELP
 
     def invoke!

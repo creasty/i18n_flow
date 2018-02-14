@@ -4,7 +4,7 @@ require_relative '../validator/errors'
 require_relative '../validator/multiplexer'
 
 class I18nFlow::CLI
-  class ValidateCommand < CommandBase
+  class LintCommand < CommandBase
     def invoke!
       validator.validate!
       print_errors
