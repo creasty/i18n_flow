@@ -9,7 +9,7 @@ describe I18nFlow::Configuration do
         base_path
         glob_patterns
         valid_locales
-        master_locale
+        locale_pairs
         split_max_level
         split_line_threshold
       ]
@@ -68,13 +68,17 @@ describe I18nFlow::Configuration do
     end
   end
 
-  describe '#master_locale, #master_locale=' do
+  describe '#locale_pairs, #locale_pairs=' do
+    it 'should return an array' do
+      expect(configuration.locale_pairs).to be_a(Array)
+    end
+
     it 'should store the given value as an array of strings in the setter' do
       expect {
-        configuration.master_locale = :en
+        configuration.locale_pairs = [[:en, :ja]]
       }.not_to raise_error
 
-      expect(configuration.master_locale).to eq('en')
+      expect(configuration.locale_pairs).to eq([['en', 'ja']])
     end
   end
 
@@ -123,17 +127,25 @@ describe I18nFlow::Configuration do
       end
     end
 
-    context 'master_locale' do
+    context 'locale_pairs' do
       it 'should raise an error if it is blank' do
-        configuration.master_locale = ''
+        configuration.locale_pairs = ''
 
         expect {
           configuration.validate!
-        }.to raise_error(/master_locale/)
+        }.to raise_error(/locale_pairs/)
+      end
+
+      it 'should raise if it is not an array of pair' do
+        configuration.locale_pairs = [['en']]
+
+        expect {
+          configuration.validate!
+        }.to raise_error(/locale_pairs/)
       end
 
       it 'should not raise if it is an array' do
-        configuration.glob_patterns = ['*.yml']
+        configuration.locale_pairs = [['en', 'ja']]
 
         expect {
           configuration.validate!
@@ -152,14 +164,6 @@ describe I18nFlow::Configuration do
 
       it 'should raise an error if it is empty' do
         configuration.valid_locales = []
-
-        expect {
-          configuration.validate!
-        }.to raise_error(/valid_locales/)
-      end
-
-      it 'should raise if it does not contain the master locale' do
-        configuration.valid_locales = [:ja]
 
         expect {
           configuration.validate!
@@ -234,7 +238,8 @@ describe I18nFlow::Configuration do
           f.content = <<-YAML
           glob_patterns:
             - 'config/locales/**/*.yml'
-          master_locale: 'ja'
+          locale_pairs:
+            - ['en', 'ja']
           valid_locales:
             - 'ja'
             - 'en'
@@ -270,7 +275,7 @@ describe I18nFlow::Configuration do
           configuration.send(:load_from_file!)
         }.not_to raise_error
 
-        expect(configuration.master_locale).to eq('ja')
+        expect(configuration.locale_pairs).to eq([['en', 'ja']])
         expect(configuration.valid_locales).to eq(['ja', 'en'])
       end
 

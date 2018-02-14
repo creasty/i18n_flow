@@ -115,7 +115,7 @@ class I18nFlow::CLI
       @validator ||= I18nFlow::Validator::Multiplexer.new(
         repository:    repository,
         valid_locales: I18nFlow.config.valid_locales,
-        master_locale: I18nFlow.config.master_locale,
+        locale_pairs:  I18nFlow.config.locale_pairs,
       )
     end
   end

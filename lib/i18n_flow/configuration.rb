@@ -58,8 +58,8 @@ class I18nFlow::Configuration
   attr_reader(*%i[
     base_path
     glob_patterns
-    master_locale
     valid_locales
+    locale_pairs
     split_max_level
     split_line_threshold
   ])
@@ -76,10 +76,6 @@ class I18nFlow::Configuration
     glob_patterns.any?
   end
 
-  validate :master_locale, 'should be an array' do
-    !master_locale.nil?
-  end
-
   validate :valid_locales, 'should be an array' do
     !valid_locales.nil?
   end
@@ -88,8 +84,8 @@ class I18nFlow::Configuration
     valid_locales.any?
   end
 
-  validate :valid_locales, 'should contain the master locale' do
-    valid_locales.include?(master_locale)
+  validate :locale_pairs, 'should be an array' do
+    !locale_pairs.nil?
   end
 
   validate :split_max_level, 'must be set' do
@@ -104,8 +100,8 @@ class I18nFlow::Configuration
     update(validate: false) do |c|
       c.base_path            = File.expand_path('.')
       c.glob_patterns        = ['*.en.yml']
-      c.master_locale        = 'en'
       c.valid_locales        = ['en']
+      c.locale_pairs         = []
       c.split_max_level      = 3
       c.split_line_threshold = 50
     end
@@ -124,10 +120,11 @@ class I18nFlow::Configuration
     end
   end
 
-  def master_locale=(locale)
-    @master_locale = locale&.tap do |v|
-      break if v.empty?
-      break v.to_s
+  def locale_pairs=(pairs)
+    @locale_pairs = pairs&.tap do |v|
+      break unless v.is_a?(Array)
+      break unless v.all? { |e| e.size == 2 }
+      break v.map { |e| e.map(&:to_s) }
     end
   end
 

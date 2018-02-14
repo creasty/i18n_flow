@@ -2,11 +2,14 @@ describe I18nFlow::Validator::Multiplexer do
   include_examples :create_repository
 
   let(:validator) do
-     I18nFlow::Validator::Multiplexer.new(
-       repository:    repository,
-       valid_locales: %w[en ja fr],
-       master_locale: 'en',
-     )
+    I18nFlow::Validator::Multiplexer.new(
+      repository: repository,
+      valid_locales: %w[en ja fr],
+      locale_pairs: [
+        %w[en ja],
+        %w[ja fr],
+      ],
+    )
   end
 
   describe '#validate' do
@@ -51,8 +54,12 @@ describe I18nFlow::Validator::Multiplexer do
         validator.validate!
         expect(validator.errors).to eq({
           'views/profiles/show.ja.yml' => {
-            'ja.views.profiles.show.key_2' => I18nFlow::Validator::ExtraKeyError.new('ja.views.profiles.show.key_2'),
             'ja.views.profiles.show.key_1' => I18nFlow::Validator::MissingKeyError.new('ja.views.profiles.show.key_1'),
+            'ja.views.profiles.show.key_2' => I18nFlow::Validator::ExtraKeyError.new('ja.views.profiles.show.key_2'),
+          },
+          'views/profiles/show.fr.yml' => {
+            "fr.views.profiles.show.key_1"=> I18nFlow::Validator::ExtraKeyError.new('fr.views.profiles.show.key_1'),
+            'fr.views.profiles.show.key_2'=> I18nFlow::Validator::MissingKeyError.new('fr.views.profiles.show.key_2'),
           },
         })
       end
