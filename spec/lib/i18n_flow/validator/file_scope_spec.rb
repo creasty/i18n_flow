@@ -1,9 +1,9 @@
-require 'i18n_flow/validator/single'
+require 'i18n_flow/validator/file_scope'
 require 'i18n_flow/validator/errors'
 
-describe I18nFlow::Validator::Single do
+describe I18nFlow::Validator::FileScope do
   let(:filepath) { 'foo/bar.en.yml' }
-  let(:validator) { I18nFlow::Validator::Single.new(nil, filepath: filepath) }
+  let(:validator) { I18nFlow::Validator::FileScope.new(nil, filepath: filepath) }
 
   describe '#validate' do
     it 'should pass if the filepath and the scope are perfectly matched' do

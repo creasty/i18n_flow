@@ -1,4 +1,4 @@
-require_relative 'single'
+require_relative 'file_scope'
 require_relative 'symmetry'
 require_relative '../parser'
 
@@ -22,9 +22,9 @@ module I18nFlow::Validator
       @errors = nil
 
       repository.asts_by_path.each do |path, tree|
-        single = Single.new(tree, filepath: path)
-        single.validate!
-        single.errors.each do |err|
+        validator = FileScope.new(tree, filepath: path)
+        validator.validate!
+        validator.errors.each do |err|
           errors[err.file][err.key] = err
         end
       end
@@ -35,9 +35,9 @@ module I18nFlow::Validator
           slave_tree = locale_trees[slave]
           next unless master_tree && slave_tree
 
-          symmetry = Symmetry.new(master_tree[master], slave_tree[slave])
-          symmetry.validate!
-          symmetry.errors.each do |err|
+          validator = Symmetry.new(master_tree[master], slave_tree[slave])
+          validator.validate!
+          validator.errors.each do |err|
             errors[err.file][err.key] = err
           end
         end

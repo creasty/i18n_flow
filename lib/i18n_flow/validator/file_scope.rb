@@ -2,7 +2,7 @@ require_relative 'errors'
 require_relative '../util'
 
 module I18nFlow::Validator
-  class Single
+  class FileScope
     attr_reader :ast
     attr_reader :filepath
 
