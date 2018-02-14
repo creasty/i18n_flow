@@ -116,6 +116,7 @@ class I18nFlow::CLI
         repository:    repository,
         valid_locales: I18nFlow.config.valid_locales,
         locale_pairs:  I18nFlow.config.locale_pairs,
+        linters:       I18nFlow.config.linters,
       )
     end
   end

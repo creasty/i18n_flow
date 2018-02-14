@@ -82,6 +82,20 @@ describe I18nFlow::Configuration do
     end
   end
 
+  describe '#linters, #linters=' do
+    it 'should return an array' do
+      expect(configuration.linters).to be_a(Array)
+    end
+
+    it 'should store the given value as an array of symbols in the setter' do
+      expect {
+        configuration.linters = ['foo', 'bar']
+      }.not_to raise_error
+
+      expect(configuration.linters).to eq([:foo, :bar])
+    end
+  end
+
   describe '#validate!' do
     context 'base_path' do
       it 'should raise an error if it is a relative path' do
@@ -146,6 +160,32 @@ describe I18nFlow::Configuration do
 
       it 'should not raise if it is an array' do
         configuration.locale_pairs = [['en', 'ja']]
+
+        expect {
+          configuration.validate!
+        }.not_to raise_error
+      end
+    end
+
+    context 'linters' do
+      it 'should raise an error if it is blank' do
+        configuration.linters = ''
+
+        expect {
+          configuration.validate!
+        }.to raise_error(/linters/)
+      end
+
+      it 'should raise if the element contains invalid value' do
+        configuration.linters = [:foo]
+
+        expect {
+          configuration.validate!
+        }.to raise_error(/linters/)
+      end
+
+      it 'should not raise if it is valid' do
+        configuration.linters = [:file_scope]
 
         expect {
           configuration.validate!

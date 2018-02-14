@@ -55,11 +55,17 @@ class I18nFlow::Configuration
     'i18n_flow.yaml',
   ].freeze
 
+  LINTERS = %i[
+    file_scope
+    symmetry
+  ].freeze
+
   attr_reader(*%i[
     base_path
     glob_patterns
     valid_locales
     locale_pairs
+    linters
     split_max_level
     split_line_threshold
   ])
@@ -88,6 +94,14 @@ class I18nFlow::Configuration
     !locale_pairs.nil?
   end
 
+  validate :linters, "should be an array" do
+    !linters.nil?
+  end
+
+  validate :linters, "should contain any of [#{LINTERS.join(', ')}]" do
+    (linters - LINTERS).empty?
+  end
+
   validate :split_max_level, 'must be set' do
     !split_max_level.nil?
   end
@@ -100,8 +114,9 @@ class I18nFlow::Configuration
     update(validate: false) do |c|
       c.base_path            = File.expand_path('.')
       c.glob_patterns        = ['*.en.yml']
-      c.valid_locales        = ['en']
+      c.valid_locales        = %w[en]
       c.locale_pairs         = []
+      c.linters              = LINTERS
       c.split_max_level      = 3
       c.split_line_threshold = 50
     end
@@ -132,6 +147,13 @@ class I18nFlow::Configuration
     @valid_locales = locales&.tap do |v|
       break unless v.is_a?(Array)
       break v.map(&:to_s)
+    end
+  end
+
+  def linters=(linters)
+    @linters = linters&.tap do |v|
+      break unless v.is_a?(Array)
+      break v.map(&:to_sym)
     end
   end
 
