@@ -10,42 +10,72 @@ File-scope linter checks consistency between file content and a file path of eac
 For `models/user.en.yml`, a file-scope is `en.models.user`.
 
 ```yaml
-en:
-  models:
-    user:
-      ...
 ```
 
 ### A file must start with scopes that derive from its file path
 
-<details><summary>:cross: Bad cases</summary>
-
-**models/user.en.yml**
+<table><thead><tr>
+  <th></th>
+  <th>models/user.en.yml</th>
+</tr></thead><tbody><tr><th>✅</th><td>
 
 ```yaml
-ja:        # should be `en`
+en:
   models:
     user:
       ...
 ```
 
-**controllers/admin/accounts\_controller.en.yml**
+</td></tr><tr><td colspan=2>
+
+Starts with `en.models.user`
+
+</td></tr></tbody></table>
+
+<table><thead><tr>
+  <th></th>
+  <th>models/user.en.yml</th>
+</tr></thead><tbody><tr><th>👎</th><td>
+
+```yaml
+ja:
+  models:
+    user:
+      ...
+```
+
+</td></tr><tr><td colspan=2>
+
+Starts with `ja`
+
+</td></tr></tbody></table>
+
+<table><thead><tr>
+  <th></th>
+  <th>controllers/admin/accounts_controller.en.yml</th>
+</tr></thead><tbody><tr><th>👎</th><td>
 
 ```yaml
 en:
   controllers:
-    nimda:      # should be `admin`
+    nimda:
       accounts_controller:
         ...
 ```
 
-</details>
+</td></tr><tr><td colspan=2>
+
+Starts with `en.controllers.nimda`
+
+</td></tr></tbody></table>
+
 
 ### Having extra key at anywhere upper-or-same level than a file-scope
 
-<details><summary>:cross: Bad case</summary>
-
-**models/user.en.yml**
+<table><thead><tr>
+  <th></th>
+  <th>models/user.en.yml</th>
+</tr></thead><tbody><tr><th>👎</th><td>
 
 ```yaml
 en:
@@ -53,25 +83,34 @@ en:
     user:
       ...
 
-  controllers: # not allowed
-    ...
+  foo: ...
 ```
 
-</details>
+</td></tr><tr><td colspan=2>
+
+`en.foo` and `en.models` coexist
+
+</td></tr></tbody></table>
+
 
 ### A file-scope itself must not have a scalar value
 
-<details><summary>:cross: Bad case</summary>
-
-**models/user.en.yml**
+<table><thead><tr>
+  <th></th>
+  <th>models/user.en.yml</th>
+</tr></thead><tbody><tr><th>👎</th><td>
 
 ```yaml
 en:
   models:
-    user: 'User'  # must be a mapping or a sequence
+    user: 'User'
 ```
 
-</details>
+</td></tr><tr><td colspan=2>
+
+`user` must be either a mapping or a sequence
+
+</td></tr></tbody></table>
 
 
 Symmetry linter
@@ -84,68 +123,96 @@ If your primary language is English and going to support Japanese as secondary, 
 
 ### Keys in a foreign file must be exhaustive and exclusive
 
-**master**
+<table><thead><tr>
+  <th></th>
+  <th>master</th>
+  <th>foreign</th>
+</tr></thead><tbody><tr><th>✅</th><td>
 
 ```yaml
 en:
-  title: 'I18nFlow'
-  description: 'Manage translation status in yaml file'
+  title: 'Non zero sum'
+  description: 'A situation in...'
 ```
 
-**foreign**
+</td><td>
 
 ```yaml
 ja:
-  title: 'I18nFlow'
-  description: '翻訳の状態管理を YAML 内で'
+  title: '非ゼロ和'
+  description: '複数の人が相互...'
 ```
 
-<details><summary>:cross: Missing key</summary>
+</td></tr><tr><td colspan=3>
 
-**master**
+Every keys exist on both files. No asymmetric keys
+
+</td></tr></tbody></table>
+
+
+<table><thead><tr>
+  <th></th>
+  <th>master</th>
+  <th>foreign</th>
+</tr></thead><tbody><tr><th>👎</th><td>
 
 ```yaml
 en:
-  title: 'I18nFlow'
-  description: 'Manage translation status in yaml file'
+  title: 'Non zero sum'
+  description: 'A situation in...'
 ```
 
-**foreign**
+</td><td>
 
 ```yaml
 ja:
-  # missing `title`
-  description: '翻訳の状態管理を YAML 内で'
+
+  description: '複数の人が相互...'
 ```
 
-</details><br>
+</td></tr><tr><td colspan=3>
 
-<details><summary>:cross: Extra key</summary>
+A missing `title` key in foreign
 
-**master**
+</td></tr></tbody></table>
+
+
+<table><thead><tr>
+  <th></th>
+  <th>master</th>
+  <th>foreign</th>
+</tr></thead><tbody><tr><th>👎</th><td>
 
 ```yaml
 en:
-  title: 'I18nFlow'
-  description: 'Manage translation status in yaml file'
+  title: 'Non zero sum'
+  description: 'A situation in...'
+  
 ```
 
-**foreign**
+</td><td>
 
 ```yaml
 ja:
-  title: 'I18nFlow'
-  description: '翻訳の状態管理を YAML 内で'
-  lead_text: 'こんにちは'  # extra key
+  title: '非ゼロ和'
+  description: '複数の人が相互...'
+  concept: '概念'
 ```
 
-</details>
+</td></tr><tr><td colspan=3>
+
+An extra `concept` key in foreign
+
+</td></tr></tbody></table>
+
 
 ### Structure must match exactly
 
-<details><summary>:cross: Bad case</summary>
-
-**master**
+<table><thead><tr>
+  <th></th>
+  <th>master</th>
+  <th>foreign</th>
+</tr></thead><tbody><tr><th>👎</th><td>
 
 ```yaml
 en:
@@ -154,36 +221,94 @@ en:
     other: '%{count} followers'
 ```
 
-**foreign**
+</td><td>
 
 ```yaml
 ja:
-  follower_count: '%{count} フォロワー'  # It's a mapping in `en` whereas here is a scalar
+  follower_count: '%{count} フォロワ'
+  
+  
 ```
 
-</details>
+</td></tr><tr><td colspan=3>
+
+`follower_count` is a mapping in master, whereas it's a scalar in foreign
+
+</td></tr></tbody></table>
+
 
 ### Interpolation arguments must match exactly
 
-<details><summary>:cross: Bad case</summary>
-
-**master**
+<table><thead><tr>
+  <th></th>
+  <th>master</th>
+  <th>foreign</th>
+</tr></thead><tbody><tr><th>✅</th><td>
 
 ```yaml
 en:
-  follower_count:
-    one: '1 follower'
-    other: '%{count} followers'
+  key: '%{alpha} %{beta} %{beta}'
 ```
 
-**foreign**
+</td><td>
 
 ```yaml
 ja:
-  follower_count:
-    one: '%{count} フォロワー'  # en: no args, ja: [count]
-    other: '%{name} さん他、%{count}人のフォロワー' # en: [count], ja: [count, name]
+  key: '%{beta} %{alpha}'
 ```
 
-</details>
+</td></tr><tr><td colspan=3>
 
+It's insensitive of arguments order and repetition
+
+</td></tr></tbody></table>
+
+
+<table><thead><tr>
+  <th></th>
+  <th>master</th>
+  <th>foreign</th>
+</tr></thead><tbody><tr><th>👎</th><td>
+
+```yaml
+en:
+  key: '%{alpha}'
+```
+
+</td><td>
+
+```yaml
+ja:
+  key: 'alpha'
+```
+
+</td></tr><tr><td colspan=3>
+
+No arguments exist in foreign
+
+</td></tr></tbody></table>
+
+
+<table><thead><tr>
+  <th></th>
+  <th>master</th>
+  <th>foreign</th>
+</tr></thead><tbody><tr><th>👎</th><td>
+
+```yaml
+en:
+  key: '%{alpha}'
+```
+
+</td><td>
+
+```yaml
+ja:
+  key: '%{gamma}'
+```
+
+</td></tr><tr><td colspan=3>
+
+A set of arguments is different from master
+
+</td></tr></tbody></table>
