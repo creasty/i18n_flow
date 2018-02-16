@@ -7,10 +7,8 @@ File-scope linter
 File-scope linter checks consistency between file content and a file path of each file, without comparing with others.
 
 'File-scope' is a sort of namespace that derives from a file path.
-For `models/user.en.yml`, a file-scope is `en.models.user`.
+For example a file-scope of `models/user.en.yml` is `en.models.user`.
 
-```yaml
-```
 
 ### A file must start with scopes that derive from its file path
 
