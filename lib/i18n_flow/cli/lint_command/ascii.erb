@@ -22,7 +22,7 @@
         A file must start with scopes that derive from its file path
         reason: extra key
       <%- else -%>
-        The key is extra
+        An extra key found
       <%- end -%>
     <%- when I18nFlow::Validator::InvalidTodoError -%>
         Todo cannot be annotated on a mapping/sequence
@@ -31,7 +31,7 @@
         master:  <%= err.expect %>
         foreign: <%= err.actual %>
     <%- when I18nFlow::Validator::InvalidLocaleError -%>
-        It has "only" but the locale is invalid
+        It has "!only" but the locale is invalid
         valid: [<%= err.expect.join(', ') %>]
         got:   <%= err.actual %>
     <%- when I18nFlow::Validator::AsymmetricArgsError -%>

@@ -5,7 +5,7 @@
 ## [<%= file %>](@<%= file %>)
   <%- errs.each do |full_key, err| -%>
 
-### <%= full_key %> [L<%= err.line %>](@<%= err.file %>)
+### <%= full_key %> [L<%= err.line %>](@<%= err.file %>:<%= err.line %>)
 
     <%- case err when nil -%>
     <%- when I18nFlow::Validator::InvalidTypeError -%>
@@ -27,7 +27,7 @@ The key is missing
 A file must start with scopes that derive from its file path
 reason: extra key
       <%- else -%>
-The key is extra
+An extra key found
       <%- end -%>
     <%- when I18nFlow::Validator::InvalidTodoError -%>
 Todo cannot be annotated on a mapping/sequence
@@ -36,7 +36,7 @@ It has "!todo" but the content diverges from the master file
 master: `<%= err.expect %>`
 foreign: `<%= err.actual %>`
     <%- when I18nFlow::Validator::InvalidLocaleError -%>
-It has "only" but the locale is invalid
+It has "!only" but the locale is invalid
 valid: `[<%= err.expect.join(', ') %>]`
 got: `<%= err.actual %>`
     <%- when I18nFlow::Validator::AsymmetricArgsError -%>
