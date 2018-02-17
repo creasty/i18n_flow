@@ -5,5 +5,6 @@ i18n_flow
 
 Manage translation status in yaml file.
 
+- [CLI](./doc/cli.md)
 - [Lint rules](./doc/rules.md)
 - [Tags](./doc/tags.md)

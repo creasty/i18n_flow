@@ -68,7 +68,7 @@ Starts with `en.controllers.nimda`
 </td></tr></tbody></table>
 
 
-### Having extra key at anywhere upper-or-same level than a file-scope
+### Having extra key at anywhere upper-or-equal level than a file-scope
 
 <table><thead><tr>
   <th></th>
