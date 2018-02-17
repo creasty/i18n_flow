@@ -462,7 +462,7 @@ You can't annotate on a mapping or a sequence.
   <th></th>
   <th>master</th>
   <th>foreign</th>
-</tr></thead><tbody><tr><th>✅</th><td>
+</tr></thead><tbody><tr><th>👎</th><td>
 
 ```yaml
 en:
