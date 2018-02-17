@@ -237,7 +237,7 @@ ja:
 </td></tr></tbody></table>
 
 
-### Interpolation arguments must match exactly
+### Interpolation arguments must be exhaustive and exclusive
 
 [→ Ignore violations with `!ignore:args`](./tags.md)
 
