@@ -1,9 +1,7 @@
 [I18nFlow] <%= summary_line %>
 
----
-
 <%- errors.each do |file, errs| -%>
-## [<%= file %>]()
+## <%= file %>
 
   <%- errs.each do |full_key, err| -%>
 ### <%= full_key %>
