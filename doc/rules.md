@@ -121,6 +121,8 @@ If your primary language is English and going to support Japanese as secondary, 
 
 ### Keys in a foreign file must be exhaustive and exclusive
 
+[→ Justify violations with `!only` or ignore with `!ignore:key`](./tags.md)
+
 <table><thead><tr>
   <th></th>
   <th>master</th>
@@ -130,7 +132,7 @@ If your primary language is English and going to support Japanese as secondary, 
 ```yaml
 en:
   title: 'Non zero sum'
-  description: 'A situation in...'
+  desc: 'A situation in...'
 ```
 
 </td><td>
@@ -138,7 +140,7 @@ en:
 ```yaml
 ja:
   title: '非ゼロ和'
-  description: '複数の人が相互...'
+  desc: '複数の人が相互...'
 ```
 
 </td></tr><tr><td colspan=3>
@@ -157,20 +159,20 @@ Every keys exist on both files. No asymmetric keys
 ```yaml
 en:
   title: 'Non zero sum'
-  description: 'A situation in...'
+  desc: 'A situation in...'
 ```
 
 </td><td>
 
 ```yaml
 ja:
-
-  description: '複数の人が相互...'
+  title: '非ゼロ和'
+  
 ```
 
 </td></tr><tr><td colspan=3>
 
-A missing `title` key in foreign
+Missing `ja.desc`
 
 </td></tr></tbody></table>
 
@@ -184,7 +186,6 @@ A missing `title` key in foreign
 ```yaml
 en:
   title: 'Non zero sum'
-  description: 'A situation in...'
   
 ```
 
@@ -193,18 +194,19 @@ en:
 ```yaml
 ja:
   title: '非ゼロ和'
-  description: '複数の人が相互...'
-  concept: '概念'
+  desc: '複数の人が相互...'
 ```
 
 </td></tr><tr><td colspan=3>
 
-An extra `concept` key in foreign
+Having the extra `ja.desc`
 
 </td></tr></tbody></table>
 
 
 ### Structure must match exactly
+
+[→ Ignore violations with `!ignore:key`](./tags.md)
 
 <table><thead><tr>
   <th></th>
@@ -230,12 +232,14 @@ ja:
 
 </td></tr><tr><td colspan=3>
 
-`follower_count` is a mapping in master, whereas it's a scalar in foreign
+`en.follower_count` is a mapping, whereas `ja.follower_count` is a scalar
 
 </td></tr></tbody></table>
 
 
 ### Interpolation arguments must match exactly
+
+[→ Ignore violations with `!ignore:args`](./tags.md)
 
 <table><thead><tr>
   <th></th>
@@ -282,7 +286,7 @@ ja:
 
 </td></tr><tr><td colspan=3>
 
-No arguments exist in foreign
+No arguments exists in `ja.key`
 
 </td></tr></tbody></table>
 
