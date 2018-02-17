@@ -29,6 +29,7 @@ class I18nFlow::CLI
     end
 
     def url_formatter
+      return @url_formatter if @url_formatter
       @url_formatter = options['url-formatter']
       @url_formatter ||= "file://#{I18nFlow.config.base_path}/%f#%l"
     end

@@ -38,15 +38,14 @@ class I18nFlow::CLI::LintCommand
 
     def with_link(str)
       str.gsub(/\[(([^\]:]+)(?::(\d+))?)\]\(\)/) do
-        '[%s](%s)' % [$1, link($2, $3)]
+        '[%s](%s)' % [$1, format_link(path: $2, line: $3)]
       end
     end
 
-    def link(path, line)
-      url = url_formatter
-      url = url.gsub(/%f\b/, path)
-      url = url.gsub(/%l\b/, line.to_s)
-      url
+    def format_link(path:, line:)
+      url_formatter
+        .gsub(/%f\b/, path)
+        .gsub(/%l\b/, line.to_s)
     end
 
     def erb
