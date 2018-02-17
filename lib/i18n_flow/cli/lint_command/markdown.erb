@@ -3,44 +3,44 @@
 
 <%- errors.each do |file, errs| -%>
 ## [<%= file %>](@<%= file %>)
-
   <%- errs.each do |full_key, err| -%>
-### <%= full_key %>
+
+### <%= full_key %> [L<%= err.line %>](@<%= err.file %>)
 
     <%- case err when nil -%>
     <%- when I18nFlow::Validator::InvalidTypeError -%>
       <%- if err.single? -%>
-A file must start with scopes that derive from its file path [L<%= err.line %>](@<%= err.file %>)
+A file must start with scopes that derive from its file path
 reason: it must not have a scalar value
       <%- else -%>
-Structure mismatches with the master file [L<%= err.line %>](@<%= err.file %>:<%= err.line %>)
+Structure mismatches with the master file
       <%- end -%>
     <%- when I18nFlow::Validator::MissingKeyError -%>
       <%- if err.single? -%>
-A file must start with scopes that derive from its file path [L<%= err.line %>](@<%= err.file %>:<%= err.line %>)
+A file must start with scopes that derive from its file path
 reason: missing key
       <%- else -%>
-The key is missing [L<%= err.line %>](@<%= err.file %>:<%= err.line %>)
+The key is missing
       <%- end -%>
     <%- when I18nFlow::Validator::ExtraKeyError -%>
       <%- if err.single? -%>
-A file must start with scopes that derive from its file path [L<%= err.line %>](@<%= err.file %>:<%= err.line %>)
+A file must start with scopes that derive from its file path
 reason: extra key
       <%- else -%>
-The key is extra [L<%= err.line %>](@<%= err.file %>:<%= err.line %>)
+The key is extra
       <%- end -%>
     <%- when I18nFlow::Validator::InvalidTodoError -%>
-Todo cannot be annotated on a mapping/sequence [L<%= err.line %>](@<%= err.file %>:<%= err.line %>)
+Todo cannot be annotated on a mapping/sequence
     <%- when I18nFlow::Validator::TodoContentError -%>
-It has "!todo" but the content diverges from the master file [L<%= err.line %>](@<%= err.file %>:<%= err.line %>)
+It has "!todo" but the content diverges from the master file
 master: `<%= err.expect %>`
 foreign: `<%= err.actual %>`
     <%- when I18nFlow::Validator::InvalidLocaleError -%>
-It has "only" but the locale is invalid [L<%= err.line %>](@<%= err.file %>:<%= err.line %>)
+It has "only" but the locale is invalid
 valid: `[<%= err.expect.join(', ') %>]`
 got: `<%= err.actual %>`
     <%- when I18nFlow::Validator::AsymmetricArgsError -%>
-Interpolation arguments diverge from the master file [L<%= err.line %>](@<%= err.file %>:<%= err.line %>)
+Interpolation arguments diverge from the master file
 master: `[<%= err.expect.join(', ') %>]`
 foreign: `[<%= err.actual.join(', ') %>]`
     <%- end -%>
