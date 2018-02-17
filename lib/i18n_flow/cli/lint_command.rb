@@ -5,13 +5,18 @@ require_relative '../validator/multiplexer'
 class I18nFlow::CLI
   class LintCommand < CommandBase
     require_relative 'lint_command/ascii_renderer'
+    require_relative 'lint_command/markdown_renderer'
+
+    DEFAULT_FORMAT = 'ascii'
 
     def invoke!
       validator.validate!
 
       case output_format
-      when 'ascii', nil
+      when 'ascii'
         puts AsciiRenderer.new(validator.errors).render
+      when 'markdown'
+        puts MarkdownRenderer.new(validator.errors, url_formatter: url_formatter).render
       else
         exit_with_message(1, 'Unsupported format: %s' % [output_format])
       end
@@ -20,8 +25,12 @@ class I18nFlow::CLI
     end
 
     def output_format
-      return @output_format if defined?(@output_format)
-      @output_format = options['format'] || options['f']
+      @output_format ||= options['format'] || DEFAULT_FORMAT
+    end
+
+    def url_formatter
+      @url_formatter = options['url-formatter']
+      @url_formatter ||= "file://#{I18nFlow.config.base_path}/%f#%l"
     end
 
   private
