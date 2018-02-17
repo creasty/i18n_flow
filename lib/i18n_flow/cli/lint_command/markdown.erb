@@ -1,0 +1,50 @@
+[I18nFlow] <%= summary_line %>
+
+---
+
+<%- errors.each do |file, errs| -%>
+## [<%= file %>]()
+
+  <%- errs.each do |full_key, err| -%>
+### <%= full_key %>
+
+    <%- case err when nil -%>
+    <%- when I18nFlow::Validator::InvalidTypeError -%>
+      <%- if err.single? -%>
+A file must start with scopes that derive from its file path [<%= err.file %>:<%= err.line %>]()
+reason: it must not have a scalar value
+      <%- else -%>
+Structure mismatches with the master file [<%= err.file %>:<%= err.line %>]()
+      <%- end -%>
+    <%- when I18nFlow::Validator::MissingKeyError -%>
+      <%- if err.single? -%>
+A file must start with scopes that derive from its file path [<%= err.file %>:<%= err.line %>]()
+reason: missing key
+      <%- else -%>
+The key is missing [<%= err.file %>:<%= err.line %>]()
+      <%- end -%>
+    <%- when I18nFlow::Validator::ExtraKeyError -%>
+      <%- if err.single? -%>
+A file must start with scopes that derive from its file path [<%= err.file %>:<%= err.line %>]()
+reason: extra key
+      <%- else -%>
+The key is extra [<%= err.file %>:<%= err.line %>]()
+      <%- end -%>
+    <%- when I18nFlow::Validator::InvalidTodoError -%>
+Todo cannot be annotated on a mapping/sequence [<%= err.file %>:<%= err.line %>]()
+    <%- when I18nFlow::Validator::TodoContentError -%>
+It has "!todo" but the content diverges from the master file [<%= err.file %>:<%= err.line %>]()
+master: `<%= err.expect %>`
+foreign: `<%= err.actual %>`
+    <%- when I18nFlow::Validator::InvalidLocaleError -%>
+It has "only" but the locale is invalid [<%= err.file %>:<%= err.line %>]()
+valid: `[<%= err.expect.join(', ') %>]`
+got: `<%= err.actual %>`
+    <%- when I18nFlow::Validator::AsymmetricArgsError -%>
+Interpolation arguments diverge from the master file [<%= err.file %>:<%= err.line %>]()
+master: `[<%= err.expect.join(', ') %>]`
+foreign: `[<%= err.actual.join(', ') %>]`
+    <%- end -%>
+  <%- end -%>
+
+<%- end -%>
