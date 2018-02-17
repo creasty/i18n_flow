@@ -16,14 +16,6 @@ class I18nFlow::CLI
       raise 'Not implemented'
     end
 
-    def invoke
-      begin
-        invoke!
-      rescue => e
-        exit_with_message(1, '[%s] %s' % [e.class.name, e.message])
-      end
-    end
-
     def exit_with_message(status, *args)
       if status.zero?
         puts(*args)

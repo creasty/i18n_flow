@@ -33,6 +33,6 @@ class I18nFlow::CLI
     end
 
     command_class = COMMANDS[command] || COMMANDS['help']
-    command_class.new(args).invoke
+    command_class.new(args).invoke!
   end
 end

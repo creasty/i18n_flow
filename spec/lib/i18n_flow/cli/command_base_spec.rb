@@ -11,18 +11,6 @@ describe I18nFlow::CLI::CommandBase do
     end
   end
 
-  describe '#invoke' do
-    it 'should call `invoke!`' do
-      expect(command).to receive(:invoke!).and_return(nil)
-      command.invoke
-    end
-
-    it 'should exit with an error message' do
-      expect(command).to receive(:exit_with_message)
-      command.invoke
-    end
-  end
-
   describe '#exit_with_message' do
     let(:message)        { 'a message' }
     let(:message_regexp) { /a message/ }
