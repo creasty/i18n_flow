@@ -37,7 +37,7 @@ class I18nFlow::CLI::LintCommand
   private
 
     def with_link(str)
-      str.gsub(/\[(([^\]:]+)(?::(\d+))?)\]\(\)/) do
+      str.gsub(/\[([^\]]+)\]\(@([^\):]+)(?::(\d+))?\)/) do
         '[%s](%s)' % [$1, format_link(path: $2, line: $3)]
       end
     end
