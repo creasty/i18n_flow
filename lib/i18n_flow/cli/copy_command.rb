@@ -1,21 +1,52 @@
+require 'psych'
 require_relative 'command_base'
 require_relative '../util'
+require_relative '../parser'
 
 class I18nFlow::CLI
   class CopyCommand < CommandBase
     def invoke!
-      @src_file = args[0]
-      @dst_file = args[1]
-
-      unless @src_file && @dst_file
-        exit_with_message(1, 'usage: i18n_flow copy SRC_FILE DST_FILE')
+      unless src_file && dst_file
+        exit_with_message(1, 'usage: i18n_flow copy [--locale=LOCALE] SRC_FILE DST_FILE')
       end
 
-      parser = I18nFlow::Parser.new(File.read(@src_file), file_path: @src_file)
+      parser = I18nFlow::Parser.new(File.read(src_file), file_path: src_file)
       parser.parse!
+
       mark_as_todo(parser.root_proxy)
 
+      if locale && first_key_node
+        first_key_node.value = locale
+      end
+
       File.write(@dst_file, parser.root_proxy.to_yaml)
+    end
+
+    def src_file
+      args[0]
+    end
+
+    def dst_file
+      args[1]
+    end
+
+    def locale
+      options['locale']
+    end
+
+    def first_key_node
+      return @first_key_node if defined?(@first_key_node)
+      @first_key_node = parser.root_proxy
+        .send(:indexed_object)
+        .node
+        .tap { |n| p n.class ; break unless n.is_a?(Psych::Nodes::Mapping) }
+        &.tap { |n| break n.children.first }
+    end
+
+  private
+
+    def parser
+      @parser ||= I18nFlow::Parser.new(File.read(src_file), file_path: src_file)
     end
 
     def mark_as_todo(ast)

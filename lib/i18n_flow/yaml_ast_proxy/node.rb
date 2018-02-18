@@ -82,10 +82,15 @@ module I18nFlow::YamlAstProxy
       parent.to_yaml
     end
 
+    def keys
+      return [] if scalar? || alias?
+      indexed_object.keys
+    end
+
   private
 
     def identity_data
-      scalar? ? value : indexed_object
+      (scalar? || alias?) ? value : indexed_object
     end
 
     def indexed_object
