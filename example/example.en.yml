@@ -1,0 +1,14 @@
+en:
+  example:
+    title: 'Example'
+
+    # Use first name in English
+    greeting: 'Hello %{first_name},'
+
+    # Might be hard to translate in other langs
+    serendipity: 'serendipity'
+
+    # Only available for US, thus marked as !only
+    follower_count: !only:en
+      one: '1 follower'
+      other: '%{count} followers'

@@ -1,0 +1,11 @@
+base_path: example
+glob_patterns:
+  - '**/*.yml'
+valid_locales:
+  - en
+  - ja
+locale_pairs:
+  - ['en', 'ja']
+linters:
+  - file_scope
+  - symmetry

@@ -1,0 +1,9 @@
+ja:
+  example:
+    title: 'サンプル'
+
+    # Use last name in Japanese
+    greeting: !ignore:args 'こんにちは %{last_name}さん'
+
+    # Should translate later
+    serendipity: !todo 'serendipity'
