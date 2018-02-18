@@ -1,4 +1,3 @@
-require 'psych'
 require_relative 'node_meta_data'
 
 module I18nFlow::YamlAstProxy
@@ -79,7 +78,7 @@ module I18nFlow::YamlAstProxy
     end
 
     def to_yaml
-      parent.to_yaml
+      parent.to_yaml(nil, line_width: -1)
     end
 
     def keys
