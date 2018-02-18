@@ -9,6 +9,8 @@ i18n_flow (beta)
 **Manage translation status in YAML file.**  
 With an official [tag](http://www.yaml.org/spec/1.2/spec.html#id2784064) feature, `i18n_flow` enables you to annotate status information directly in YAML file.
 
+![](https://user-images.githubusercontent.com/1695538/36351596-bcf4deb8-14ef-11e8-8ef7-5b267ce5b883.png)
+
 - [Lint rules](./doc/rules.md)
 - [Tags](./doc/tags.md)
 
