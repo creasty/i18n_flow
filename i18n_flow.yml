@@ -6,6 +6,3 @@ valid_locales:
   - ja
 locale_pairs:
   - ['en', 'ja']
-linters:
-  - file_scope
-  - symmetry

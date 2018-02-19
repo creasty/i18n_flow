@@ -9,7 +9,7 @@ i18n_flow (beta)
 **Manage translation status in YAML file.**  
 With an official [tag](http://www.yaml.org/spec/1.2/spec.html#id2784064) feature, `i18n_flow` enables you to annotate status information directly in YAML file.
 
-![](https://user-images.githubusercontent.com/1695538/36351596-bcf4deb8-14ef-11e8-8ef7-5b267ce5b883.png)
+![](https://user-images.githubusercontent.com/1695538/36359417-6a976054-155e-11e8-914b-d6a10a8287fc.png)
 
 - [Lint rules](./doc/rules.md)
 - [Tags](./doc/tags.md)
@@ -40,9 +40,6 @@ valid_locales:
   - ja
 locale_pairs:
   - ['en', 'ja']
-linters:
-  - file_scope
-  - symmetry
 ^D
 ```
 
@@ -68,4 +65,38 @@ Commands:
     split      Split a file into proper-sized files
     version    Show version
     help       Show help
+```
+
+
+Configuration file
+------------------
+
+```yaml
+# Base directory
+# Default: pwd
+base_path: config/locales
+
+# Patterns for locale YAML files
+# Default: ['*.en.yml']
+glob_patterns:
+  - '**/*.yml'
+
+# List of all supporting locales
+# May want to sync with `I18n.available_locales`
+# Default: ['en']
+valid_locales:
+  - en
+  - ja
+
+# List of master-foreign pairs
+# Used by the linter to check symmetry
+# Default: []
+locale_pairs:
+  - ['en', 'ja']
+
+# Enabled linters
+# Default
+linters:
+  - file_scope
+  - symmetry
 ```

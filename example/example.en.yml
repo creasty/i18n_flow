@@ -5,10 +5,10 @@ en:
     # Use first name in English
     greeting: 'Hello %{first_name},'
 
-    # Might be hard to translate in other langs
+    # Might be hard to translate into other langs
     serendipity: 'serendipity'
 
-    # Only available for US, thus marked as !only
+    # Only available in English version
     follower_count: !only:en
       one: '1 follower'
       other: '%{count} followers'
