@@ -61,6 +61,7 @@ Options:
 
 Commands:
     lint       Validate files
+    search     Search contents and keys
     copy       Copy translations and mark as todo
     split      Split a file into proper-sized files
     version    Show version

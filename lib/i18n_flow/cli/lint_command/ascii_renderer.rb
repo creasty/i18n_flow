@@ -1,18 +1,10 @@
 require 'erb'
 require_relative '../../validator/errors'
+require_relative '../color'
 
 class I18nFlow::CLI::LintCommand
   class AsciiRenderer
-    COLORS = {
-      black:   30,
-      red:     31,
-      green:   32,
-      yellow:  33,
-      blue:    34,
-      magenta: 35,
-      cyan:    36,
-      white:   37,
-    }.freeze
+    include I18nFlow::CLI::Color
 
     FILE = __dir__ + '/ascii.erb'
 
@@ -57,10 +49,6 @@ class I18nFlow::CLI::LintCommand
       str = str.gsub(/(#\d+)$/) { color($1, :yellow) }
       str = str.gsub(/^([ ]{8})(.+)$/) { $1 + color($2, :red) }
       str
-    end
-
-    def color(str, c)
-      "\e[1;#{COLORS[c]}m#{str}\e[0m"
     end
 
     def erb

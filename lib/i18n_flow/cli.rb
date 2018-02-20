@@ -4,11 +4,13 @@ class I18nFlow::CLI
   require_relative 'cli/lint_command'
   require_relative 'cli/split_command'
   require_relative 'cli/copy_command'
+  require_relative 'cli/search_command'
   require_relative 'cli/version_command'
   require_relative 'cli/help_command'
 
   COMMANDS = {
     'lint'    => LintCommand,
+    'search'  => SearchCommand,
     'split'   => SplitCommand,
     'copy'    => CopyCommand,
     'version' => VersionCommand,
