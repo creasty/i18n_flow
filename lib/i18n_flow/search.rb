@@ -27,8 +27,8 @@ class I18nFlow::Search
   attr_reader :repository
   attr_reader :pattern
 
-  SCORE_KEY_CS_MATCH = 10
-  SCORE_KEY_CI_MATCH = 9
+  SCORE_KEY_CS_MATCH     = 10
+  SCORE_KEY_CI_MATCH     = 9
   SCORE_CONTENT_CS_MATCH = 8
   SCORE_CONTENT_CI_MATCH = 6
 
