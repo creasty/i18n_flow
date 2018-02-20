@@ -23,12 +23,11 @@ class I18nFlow::CLI
             puts color(m.value, :green).gsub(/^/, '    ')
           end
         end
+
+        puts
       end
 
-      if result_size > 0
-        puts
-        puts '%d %s' % [result_size, result_size == 1 ? 'hit' : 'hits']
-      end
+      puts '%d %s' % [result_size, result_size == 1 ? 'hit' : 'hits']
     end
 
     def pattern
