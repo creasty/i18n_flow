@@ -112,13 +112,15 @@ private
   def score_for(node)
     key = node.scopes[1..-1].join('.')
 
-    if node.mapping?
-      key_match_score(key)
-    elsif node.scalar?
-      content_match_score(node.value)
-    else
-      0
+    key_match_score(key).tap do |score|
+      return score if score > 0
     end
+
+    if node.scalar?
+      return content_match_score(node.value)
+    end
+
+    0
   end
 
   def key_match_score(key)
@@ -129,7 +131,7 @@ private
       return SCORE_KEY_CI_MATCH
     end
 
-    return 0
+    0
   end
 
   def content_match_score(str)
@@ -143,7 +145,7 @@ private
       return SCORE_CONTENT_CI_MATCH * lcs_score(str, pattern_downcase)
     end
 
-    return 0
+    0
   end
 
   def lcs_score(a, b)
