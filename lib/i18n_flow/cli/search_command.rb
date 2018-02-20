@@ -1,9 +1,12 @@
 require_relative 'command_base'
+require_relative 'color'
 require_relative '../repository'
 require_relative '../search'
 
 class I18nFlow::CLI
   class SearchCommand < CommandBase
+    include I18nFlow::CLI::Color
+
     def invoke!
       unless pattern
         exit_with_message(1, 'usage: i18n_flow search PATTERN')
@@ -11,13 +14,33 @@ class I18nFlow::CLI
 
       search.search!
 
-      search.results.each do |r|
-        p r
+      search.results.each do |key, matches|
+        puts '=== %s' % [color(key, :yellow)]
+
+        matches.each do |m|
+          puts '    %s (%s:%s)' % [color(m.locale, :blue), m.file, m.line]
+          if m.value
+            puts color(m.value, :green).gsub(/^/, '    ')
+          end
+        end
+      end
+
+      if result_size > 0
+        puts
+        puts '%d %s' % [result_size, result_size == 1 ? 'hit' : 'hits']
       end
     end
 
     def pattern
       args[0]
+    end
+
+    def include_all?
+      !!(options['all'] || options['a'])
+    end
+
+    def result_size
+      @result_size ||= search.results.size
     end
 
   private
@@ -31,8 +54,9 @@ class I18nFlow::CLI
 
     def search
       @search ||= I18nFlow::Search.new(
-        repository: repository,
-        pattern:    pattern,
+        repository:  repository,
+        pattern:     pattern,
+        include_all: include_all?,
       )
     end
   end
