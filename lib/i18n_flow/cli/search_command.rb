@@ -19,9 +19,9 @@ class I18nFlow::CLI
 
       case output_format
       when 'default'
-        puts DefaultRenderer.new(search.results).render
+        puts DefaultRenderer.new(search.results, color: color_enabled?).render
       when 'oneline'
-        puts OnelineRenderer.new(search.results).render
+        puts OnelineRenderer.new(search.results, color: color_enabled?).render
       else
         exit_with_message(1, 'Unsupported format: %s' % [output_format])
       end
