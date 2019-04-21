@@ -6,6 +6,7 @@ require_relative '../search'
 class I18nFlow::CLI
   class SearchCommand < CommandBase
     require_relative 'search_command/default_renderer'
+    require_relative 'search_command/oneline_renderer'
 
     DEFAULT_FORMAT = 'default'
 
@@ -19,6 +20,8 @@ class I18nFlow::CLI
       case output_format
       when 'default'
         puts DefaultRenderer.new(search.results).render
+      when 'oneline'
+        puts OnelineRenderer.new(search.results).render
       else
         exit_with_message(1, 'Unsupported format: %s' % [output_format])
       end

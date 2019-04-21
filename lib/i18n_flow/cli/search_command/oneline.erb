@@ -1,0 +1,5 @@
+<%- results.each do |key, matches| -%>
+  <%- matches.each do |m| -%>
+<%= key %> [<%= m.locale %>] (<%= m.file %>:<%= m.line %>) <%= m.value&.gsub(/\s+/, ' ').strip %>
+  <%- end -%>
+<%- end -%>
