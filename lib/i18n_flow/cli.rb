@@ -7,14 +7,16 @@ class I18nFlow::CLI
   require_relative 'cli/search_command'
   require_relative 'cli/version_command'
   require_relative 'cli/help_command'
+  require_relative 'cli/read_config_command'
 
   COMMANDS = {
-    'lint'    => LintCommand,
-    'search'  => SearchCommand,
-    'split'   => SplitCommand,
-    'copy'    => CopyCommand,
-    'version' => VersionCommand,
-    'help'    => HelpCommand,
+    'lint'        => LintCommand,
+    'search'      => SearchCommand,
+    'split'       => SplitCommand,
+    'copy'        => CopyCommand,
+    'version'     => VersionCommand,
+    'help'        => HelpCommand,
+    'read_config' => ReadConfigCommand,
   }
 
   attr_reader :args
