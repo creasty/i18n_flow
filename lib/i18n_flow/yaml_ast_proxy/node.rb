@@ -1,4 +1,5 @@
 require_relative 'node_meta_data'
+require 'forwardable'
 
 module I18nFlow::YamlAstProxy
   class Node

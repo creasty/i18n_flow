@@ -1,0 +1,11 @@
+<%- results.each do |key, matches| -%>
+=== <%= key %>
+  <%- matches.each do |m| -%>
+    <%= m.locale %> (<%= m.file %>:<%= m.line %>)
+    <%- if m.value -%>
+<%= m.value.gsub(/^/, '    ') %>
+    <%- end -%>
+  <%- end -%>
+
+<%- end -%>
+<%= results.size %> <%= results.size == 1 ? 'hit' : 'hits' %>

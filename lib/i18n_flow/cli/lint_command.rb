@@ -14,7 +14,7 @@ class I18nFlow::CLI
 
       case output_format
       when 'ascii'
-        puts AsciiRenderer.new(validator.errors).render
+        puts AsciiRenderer.new(validator.errors, color: color_enabled?).render
       when 'markdown'
         puts MarkdownRenderer.new(validator.errors, url_formatter: url_formatter).render
       else

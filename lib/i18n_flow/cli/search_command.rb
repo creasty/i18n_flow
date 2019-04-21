@@ -5,7 +5,10 @@ require_relative '../search'
 
 class I18nFlow::CLI
   class SearchCommand < CommandBase
-    include I18nFlow::CLI::Color
+    require_relative 'search_command/default_renderer'
+    require_relative 'search_command/oneline_renderer'
+
+    DEFAULT_FORMAT = 'default'
 
     def invoke!
       unless pattern
@@ -14,32 +17,26 @@ class I18nFlow::CLI
 
       search.search!
 
-      search.results.each do |key, matches|
-        puts '=== %s' % [color(key, :yellow)]
-
-        matches.each do |m|
-          puts '    %s (%s:%s)' % [color(m.locale, :blue), m.file, m.line]
-          if m.value
-            puts color(m.value, :green).gsub(/^/, '    ')
-          end
-        end
-
-        puts
+      case output_format
+      when 'default'
+        puts DefaultRenderer.new(search.results, color: color_enabled?).render
+      when 'oneline'
+        puts OnelineRenderer.new(search.results, color: color_enabled?).render
+      else
+        exit_with_message(1, 'Unsupported format: %s' % [output_format])
       end
-
-      puts '%d %s' % [result_size, result_size == 1 ? 'hit' : 'hits']
     end
 
     def pattern
       args[0]
     end
 
-    def include_all?
-      !!(options['all'] || options['a'])
+    def output_format
+      @output_format ||= options['format'] || DEFAULT_FORMAT
     end
 
-    def result_size
-      @result_size ||= search.results.size
+    def include_all?
+      !!(options['all'] || options['a'])
     end
 
   private

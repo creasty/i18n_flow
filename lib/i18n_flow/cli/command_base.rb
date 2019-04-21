@@ -25,5 +25,9 @@ class I18nFlow::CLI
 
       exit status
     end
+
+    def color_enabled?
+      options['nocolor'].nil?
+    end
   end
 end
