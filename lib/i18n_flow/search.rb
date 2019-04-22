@@ -3,6 +3,7 @@ class I18nFlow::Search
     attr_reader :locale
     attr_reader :file
     attr_reader :line
+    attr_reader :column
     attr_reader :value
     attr_reader :score
 
@@ -10,12 +11,14 @@ class I18nFlow::Search
       locale:,
       file:,
       line:,
+      column:,
       value:,
       score:
     )
       @locale = locale
       @file   = file
       @line   = line
+      @column = column
       @value  = value
       @score  = score
     end
@@ -104,6 +107,7 @@ private
       locale: locale,
       file:   node.file_path,
       line:   node.start_line,
+      column: node.start_column,
       value:  node.value,
       score:  score,
     )
