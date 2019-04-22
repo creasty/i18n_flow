@@ -25,6 +25,14 @@ module I18nFlow::YamlAstProxy
       node.end_line + line_correction
     end
 
+    def start_column
+      node.start_column
+    end
+
+    def end_column
+      node.end_column
+    end
+
     def anchor
       node.anchor
     end
