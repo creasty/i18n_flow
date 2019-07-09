@@ -36,9 +36,18 @@ module I18nFlow::Validator
   end
 
   class MissingKeyError < Error
+    attr_reader :dest_node
+    attr_reader :dest_key
+    attr_reader :src_node
+
     def initialize(key, single: false)
       super(key)
       @single = single
+    end
+
+    def set_correction_context(dest_node:, dest_key:, src_node:)
+      @dest_node, @dest_key, @src_node = dest_node, dest_key, src_node
+      self
     end
   end
 

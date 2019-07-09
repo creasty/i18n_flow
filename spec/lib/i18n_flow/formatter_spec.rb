@@ -35,7 +35,6 @@ describe I18nFlow::Formatter do
       YAML
 
       formatted = format_ast(ast_1)
-
       expect(formatted.to_yaml).to eq(result.to_yaml)
     end
 
@@ -65,7 +64,6 @@ describe I18nFlow::Formatter do
         YAML
 
         formatted = format_ast(ast_1)
-
         expect(formatted.to_yaml).to eq(result.to_yaml)
       end
 
@@ -94,7 +92,6 @@ describe I18nFlow::Formatter do
         YAML
 
         formatted = format_ast(ast_1)
-
         expect(formatted.to_yaml).to eq(result.to_yaml)
       end
 
@@ -133,7 +130,43 @@ describe I18nFlow::Formatter do
         YAML
 
         formatted = format_ast(ast_1)
+        expect(formatted.to_yaml).to eq(result.to_yaml)
+      end
+    end
 
+    context 'correct errors' do
+      it 'should complement missing keys and mark as !todo' do
+        ast_1 = parse_yaml(<<-YAML)
+        es:
+          alfa: 'a'
+          delta: 'd'
+          echo: 'e'
+          golf: 'g'
+          hotel: 'h'
+        YAML
+        ast_2 = parse_yaml(<<-YAML)
+        en:
+          alfa: 'A'
+          bravo: 'B'
+          charlie: 'C'
+          delta: 'D'
+          echo: 'E'
+          foxtrot: !only 'F'
+          golf: 'G'
+          hotel: 'H'
+        YAML
+        result = parse_yaml(<<-YAML)
+        es:
+          alfa: 'a'
+          bravo: !todo 'B'
+          charlie: !todo 'C'
+          delta: 'd'
+          echo: 'e'
+          golf: 'g'
+          hotel: 'h'
+        YAML
+
+        formatted = format_ast(ast_1, ast_2)
         expect(formatted.to_yaml).to eq(result.to_yaml)
       end
     end
