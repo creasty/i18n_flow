@@ -10,7 +10,7 @@ module I18nFlow::YamlAstProxy
     TAG_TODO   = /^!todo(?::([,a-zA-Z_-]+))?$/
     TAG_ONLY   = /^!only(?::([,a-zA-Z_-]+))?$/
 
-    attr_reader :node
+    attr_accessor :node
     attr_reader :parent
     attr_reader :scopes
     attr_reader :file_path
@@ -85,6 +85,12 @@ module I18nFlow::YamlAstProxy
     def keys
       return [] if scalar? || alias?
       indexed_object.keys
+    end
+
+    def clone
+      super.tap do |n|
+        n.node = node.clone
+      end
     end
 
   private

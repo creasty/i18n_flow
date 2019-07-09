@@ -23,7 +23,7 @@ class I18nFlow::Corrector
     errors.each do |error|
       case error
       when I18nFlow::Validator::MissingKeyError
-        src_node = error.src_node
+        src_node = error.src_node.clone
         I18nFlow::YamlAstProxy.mark_as_todo(src_node)
         error.dest_node[error.dest_key] = src_node.node
       when I18nFlow::Validator::ExtraKeyError
