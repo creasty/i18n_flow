@@ -118,10 +118,12 @@ module I18nFlow::Validator
 
       if n1
         full_key = [t2.locale, *n1.scopes.drop(1)].join('.')
-        MissingKeyError.new(full_key).set_location(t2)
+        MissingKeyError.new(full_key)
+          .set_location(t2)
           .set_correction_context(dest_node: t2, dest_key: key, src_node: n1)
       else
-        ExtraKeyError.new(n2.full_key).set_location(n2)
+        ExtraKeyError.new(n2.full_key)
+          .set_location(n2)
           .set_correction_context(dest_node: t2, dest_key: key)
       end
     end

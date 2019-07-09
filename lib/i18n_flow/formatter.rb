@@ -1,5 +1,6 @@
 require_relative 'validator/symmetry'
 require_relative 'validator/errors'
+require_relative 'yaml_ast_proxy'
 
 class I18nFlow::Formatter
   attr_reader :ast_1
@@ -27,14 +28,11 @@ private
   end
 
   def correct_errors(ast_1, ast_2)
-    first_key_nodes = [ast_1, ast_2]
-      .map { |n| first_key_node_of(n) }
+    n1, n2 = [ast_1, ast_2]
+      .map { |n| I18nFlow::YamlAstProxy.first_value_node_of(n) }
+      .map { |n| I18nFlow::YamlAstProxy.create(n) }
 
-    first_value_nodes = [ast_1, ast_2]
-      .zip(first_key_nodes)
-      .map { |(ast, key_node)| ast[key_node.value] }
-
-    errors = I18nFlow::Validator::Symmetry.new(first_value_nodes[1], first_value_nodes[0])
+    errors = I18nFlow::Validator::Symmetry.new(n2, n1)
       .tap(&:validate!)
       .errors
 
@@ -42,7 +40,7 @@ private
       case error
       when I18nFlow::Validator::MissingKeyError
         src_node = error.src_node
-        mark_as_todo(src_node)
+        I18nFlow::YamlAstProxy.mark_as_todo(src_node)
         error.dest_node[error.dest_key] = src_node.node
       when I18nFlow::Validator::ExtraKeyError
         if error.dest_node.mapping?
@@ -51,32 +49,6 @@ private
           error.dest_node.delete_at(error.dest_key)
         end
       end
-    end
-  end
-
-  def first_key_node_of(node)
-    node
-      .send(:indexed_object)
-      .node
-      .tap { |n| break unless n.is_a?(Psych::Nodes::Mapping) }
-      &.tap { |n| break n.children.first }
-  end
-
-  def mark_as_todo(ast)
-    if ast.alias?
-      return
-    end
-    if ast.scalar?
-      ast.node.tag = '!todo'
-
-      # https://github.com/ruby/psych/blob/f30b65befa4f0a5a8548d482424a84a2383b0284/ext/psych/yaml/emitter.c#L1187
-      ast.node.plain = ast.node.quoted = false
-
-      return
-    end
-
-    ast.each do |k, v|
-      mark_as_todo(v)
     end
   end
 end

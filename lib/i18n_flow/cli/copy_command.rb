@@ -2,6 +2,7 @@ require 'psych'
 require_relative 'command_base'
 require_relative '../util'
 require_relative '../parser'
+require_relative 'yaml_ast_proxy'
 
 class I18nFlow::CLI
   class CopyCommand < CommandBase
@@ -12,7 +13,7 @@ class I18nFlow::CLI
 
       parser.parse!
 
-      mark_as_todo(parser.root_proxy)
+      I18nFlow::YamlAstProxy.mark_as_todo(parser.root_proxy)
 
       if locale && first_key_node
         first_key_node.value = locale
@@ -35,35 +36,13 @@ class I18nFlow::CLI
 
     def first_key_node
       return @first_key_node if defined?(@first_key_node)
-      @first_key_node = parser.root_proxy
-        .send(:indexed_object)
-        .node
-        .tap { |n| break unless n.is_a?(Psych::Nodes::Mapping) }
-        &.tap { |n| break n.children.first }
+      @first_key_node = I18nFlow::YamlAstProxy.first_key_node_of(parser.root_proxy)
     end
 
   private
 
     def parser
       @parser ||= I18nFlow::Parser.new(File.read(src_file), file_path: src_file)
-    end
-
-    def mark_as_todo(ast)
-      if ast.alias?
-        return
-      end
-      if ast.scalar?
-        ast.node.tag = '!todo'
-
-        # https://github.com/ruby/psych/blob/f30b65befa4f0a5a8548d482424a84a2383b0284/ext/psych/yaml/emitter.c#L1187
-        ast.node.plain = ast.node.quoted = false
-
-        return
-      end
-
-      ast.each do |k, v|
-        mark_as_todo(v)
-      end
     end
   end
 end
