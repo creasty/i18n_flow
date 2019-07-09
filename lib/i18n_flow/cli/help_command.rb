@@ -15,6 +15,7 @@ Options:
 
 Commands:
     lint       Validate files
+    format     Format and correct errors
     search     Search contents and keys
     copy       Copy translations and mark as todo
     split      Split a file into proper-sized files
