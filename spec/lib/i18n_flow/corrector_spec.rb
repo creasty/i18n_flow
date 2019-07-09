@@ -53,17 +53,17 @@ describe I18nFlow::Corrector do
       ast_2 = parse_yaml(<<-YAML)
       en:
         foo:
-          - 'one'
-          - 'two'
-          - 'three'
-          - !only 'four'
+          - 'ONE'
+          - 'TWO'
+          - 'THREE'
+          - !only 'FOUR'
       YAML
       result = parse_yaml(<<-YAML)
       es:
         foo:
           - 'one'
           - 'two'
-          - !todo 'three'
+          - !todo 'THREE'
       YAML
 
       corrected = correct_ast(ast_1, ast_2)
@@ -116,8 +116,8 @@ describe I18nFlow::Corrector do
       ast_2 = parse_yaml(<<-YAML)
       en:
         foo:
-          - 'one'
-          - 'two'
+          - 'ONE'
+          - 'TWO'
       YAML
       result = parse_yaml(<<-YAML)
       es:
