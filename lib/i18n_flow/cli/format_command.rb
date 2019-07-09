@@ -13,6 +13,7 @@ class I18nFlow::CLI
           slave_tree = locale_trees[slave]
           next unless master_tree && slave_tree
 
+          printf "--> %s\n", slave_tree.file_path
           correct(slave_tree, master_tree)
 
           # output_path = I18nFlow.config.base_path.join(slave_tree.file_path)
@@ -20,9 +21,11 @@ class I18nFlow::CLI
         end
       end
 
+      puts
       puts '==> Formatting'
       repository.asts_by_path.each do |path, tree|
         printf "--> %s\n", path
+
         format(tree)
 
         output_path = I18nFlow.config.base_path.join(tree.file_path)
