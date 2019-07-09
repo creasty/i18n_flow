@@ -15,9 +15,9 @@ module I18nFlow::YamlAstProxy
         node
       else
         node.class.new(node.node,
-          paernt:    parent,
-          scpoes:    scopes,
-          fiel_path: file_path,
+          parent:    parent,
+          scopes:    scopes,
+          file_path: file_path,
         )
       end
     when Psych::Nodes::Stream, Psych::Nodes::Document
