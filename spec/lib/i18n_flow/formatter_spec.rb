@@ -112,7 +112,8 @@ describe I18nFlow::Formatter do
             bar: 'bar'
             foo: 'foo'
           golf: 'G'
-          hotel: 'H'
+          hotel:
+            baz: 'baz'
         YAML
         result = parse_yaml(<<-YAML)
         en:
@@ -124,10 +125,11 @@ describe I18nFlow::Formatter do
           delta: 'D'
           echo: 'E'
           golf: 'G'
-          hotel: 'H'
           foxtrot:
             bar: 'bar'
             foo: 'foo'
+          hotel:
+            baz: 'baz'
         YAML
 
         formatted = format_ast(ast_1)
