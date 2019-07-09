@@ -11,6 +11,7 @@ module I18nFlow::YamlAstProxy
     TAG_ONLY   = /^!only(?::([,a-zA-Z_-]+))?$/
 
     attr_accessor :node
+    protected :node=
     attr_reader :parent
     attr_reader :scopes
     attr_reader :file_path
