@@ -25,6 +25,12 @@ module I18nFlow::YamlAstProxy
     end
     alias []= set
 
+    def delete(key)
+      indexed_object.delete(key)
+      cache.delete(key)
+      synchronize!
+    end
+
     def batch
       @locked = true
       yield

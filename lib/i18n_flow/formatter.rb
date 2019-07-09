@@ -44,6 +44,12 @@ private
         src_node = error.src_node
         mark_as_todo(src_node)
         error.dest_node[error.dest_key] = src_node.node
+      when I18nFlow::Validator::ExtraKeyError
+        if error.dest_node.mapping?
+          error.dest_node.delete(error.dest_key)
+        elsif error.dest_node.sequence?
+          error.dest_node.delete_at(error.dest_key)
+        end
       end
     end
   end

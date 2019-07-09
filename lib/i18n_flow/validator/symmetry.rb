@@ -122,6 +122,7 @@ module I18nFlow::Validator
           .set_correction_context(dest_node: t2, dest_key: key, src_node: n1)
       else
         ExtraKeyError.new(n2.full_key).set_location(n2)
+          .set_correction_context(dest_node: t2, dest_key: key)
       end
     end
 

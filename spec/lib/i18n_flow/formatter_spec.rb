@@ -169,6 +169,94 @@ describe I18nFlow::Formatter do
         formatted = format_ast(ast_1, ast_2)
         expect(formatted.to_yaml).to eq(result.to_yaml)
       end
+
+      it 'should complement missing elements in a sequence' do
+        ast_1 = parse_yaml(<<-YAML)
+        es:
+          foo:
+            - 'one'
+            - 'two'
+        YAML
+        ast_2 = parse_yaml(<<-YAML)
+        en:
+          foo:
+            - 'one'
+            - 'two'
+            - 'three'
+            - !only 'four'
+        YAML
+        result = parse_yaml(<<-YAML)
+        es:
+          foo:
+            - 'one'
+            - 'two'
+            - !todo 'three'
+        YAML
+
+        formatted = format_ast(ast_1, ast_2)
+        expect(formatted.to_yaml).to eq(result.to_yaml)
+      end
+
+      it 'should delete extra keys which are not marked as !only' do
+        ast_1 = parse_yaml(<<-YAML)
+        es:
+          alfa: 'a'
+          bravo: 'b'
+          charlie: 'c'
+          delta: 'd'
+          echo: 'e'
+          foxtrot: !only 'f'
+          golf: 'g'
+          hotel: 'h'
+        YAML
+        ast_2 = parse_yaml(<<-YAML)
+        en:
+          alfa: 'A'
+          bravo: 'B'
+          charlie: 'C'
+          golf: 'G'
+          hotel: 'H'
+        YAML
+        result = parse_yaml(<<-YAML)
+        es:
+          alfa: 'a'
+          bravo: 'b'
+          charlie: 'c'
+          foxtrot: !only 'f'
+          golf: 'g'
+          hotel: 'h'
+        YAML
+
+        formatted = format_ast(ast_1, ast_2)
+        expect(formatted.to_yaml).to eq(result.to_yaml)
+      end
+
+      it 'should delete extra elements in a sequence' do
+        ast_1 = parse_yaml(<<-YAML)
+        es:
+          foo:
+            - 'one'
+            - 'two'
+            - 'three'
+            - !only 'four'
+        YAML
+        ast_2 = parse_yaml(<<-YAML)
+        en:
+          foo:
+            - 'one'
+            - 'two'
+        YAML
+        result = parse_yaml(<<-YAML)
+        es:
+          foo:
+            - 'one'
+            - 'two'
+            - !only 'four'
+        YAML
+
+        formatted = format_ast(ast_1, ast_2)
+        expect(formatted.to_yaml).to eq(result.to_yaml)
+      end
     end
   end
 end

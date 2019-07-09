@@ -52,9 +52,17 @@ module I18nFlow::Validator
   end
 
   class ExtraKeyError < Error
+    attr_reader :dest_node
+    attr_reader :dest_key
+
     def initialize(key, single: false)
       super(key)
       @single = single
+    end
+
+    def set_correction_context(dest_node:, dest_key:)
+      @dest_node, @dest_key = dest_node, dest_key
+      self
     end
   end
 
