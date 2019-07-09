@@ -49,6 +49,14 @@ module I18nFlow::YamlAstProxy
       end
     end
 
+    def sort_keys!
+      @indexed_object = indexed_object
+        .sort_by { |k, v| [v.is_a?(Psych::Nodes::Mapping) ? 1 : 0, k] }
+        .to_h
+      @cache = nil
+      synchronize!
+    end
+
   private
 
     def cache
