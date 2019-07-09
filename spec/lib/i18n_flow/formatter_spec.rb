@@ -1,15 +1,15 @@
 require 'i18n_flow/formatter'
 
 describe I18nFlow::Formatter do
-  def format_ast(ast_1, ast_2 = nil)
-    I18nFlow::Formatter.new(ast_1, ast_2)
+  def format_ast(ast)
+    I18nFlow::Formatter.new(ast)
       .tap(&:format!)
-      .ast_1
+      .ast
   end
 
   describe '#format!' do
     it 'should remove extra whitespaces' do
-      ast_1 = parse_yaml(<<-YAML)
+      ast = parse_yaml(<<-YAML)
       en:
         alfa: 'A'
 
@@ -34,13 +34,13 @@ describe I18nFlow::Formatter do
         hotel: 'H'
       YAML
 
-      formatted = format_ast(ast_1)
+      formatted = format_ast(ast)
       expect(formatted.to_yaml).to eq(result.to_yaml)
     end
 
     context 'sort keys' do
       it 'should sort keys' do
-        ast_1 = parse_yaml(<<-YAML)
+        ast = parse_yaml(<<-YAML)
         en:
           echo: 'E'
           delta: 'D'
@@ -63,12 +63,12 @@ describe I18nFlow::Formatter do
           hotel: 'H'
         YAML
 
-        formatted = format_ast(ast_1)
+        formatted = format_ast(ast)
         expect(formatted.to_yaml).to eq(result.to_yaml)
       end
 
       it 'should sort keys recursively' do
-        ast_1 = parse_yaml(<<-YAML)
+        ast = parse_yaml(<<-YAML)
         en:
           alfa: 'A'
           bravo:
@@ -91,12 +91,12 @@ describe I18nFlow::Formatter do
               hotel: 'H'
         YAML
 
-        formatted = format_ast(ast_1)
+        formatted = format_ast(ast)
         expect(formatted.to_yaml).to eq(result.to_yaml)
       end
 
       it 'should move mappings at the bottom' do
-        ast_1 = parse_yaml(<<-YAML)
+        ast = parse_yaml(<<-YAML)
         en:
           alfa: 'A'
           bravo: 'B'
@@ -129,132 +129,7 @@ describe I18nFlow::Formatter do
             baz: 'baz'
         YAML
 
-        formatted = format_ast(ast_1)
-        expect(formatted.to_yaml).to eq(result.to_yaml)
-      end
-    end
-
-    context 'correct errors' do
-      it 'should complement missing keys and mark as !todo' do
-        ast_1 = parse_yaml(<<-YAML)
-        es:
-          alfa: 'a'
-          delta: 'd'
-          echo: 'e'
-          golf: 'g'
-          hotel: 'h'
-        YAML
-        ast_2 = parse_yaml(<<-YAML)
-        en:
-          alfa: 'A'
-          bravo: 'B'
-          charlie: 'C'
-          delta: 'D'
-          echo: 'E'
-          foxtrot: !only 'F'
-          golf: 'G'
-          hotel: 'H'
-        YAML
-        result = parse_yaml(<<-YAML)
-        es:
-          alfa: 'a'
-          bravo: !todo 'B'
-          charlie: !todo 'C'
-          delta: 'd'
-          echo: 'e'
-          golf: 'g'
-          hotel: 'h'
-        YAML
-
-        formatted = format_ast(ast_1, ast_2)
-        expect(formatted.to_yaml).to eq(result.to_yaml)
-      end
-
-      it 'should complement missing elements in a sequence' do
-        ast_1 = parse_yaml(<<-YAML)
-        es:
-          foo:
-            - 'one'
-            - 'two'
-        YAML
-        ast_2 = parse_yaml(<<-YAML)
-        en:
-          foo:
-            - 'one'
-            - 'two'
-            - 'three'
-            - !only 'four'
-        YAML
-        result = parse_yaml(<<-YAML)
-        es:
-          foo:
-            - 'one'
-            - 'two'
-            - !todo 'three'
-        YAML
-
-        formatted = format_ast(ast_1, ast_2)
-        expect(formatted.to_yaml).to eq(result.to_yaml)
-      end
-
-      it 'should delete extra keys which are not marked as !only' do
-        ast_1 = parse_yaml(<<-YAML)
-        es:
-          alfa: 'a'
-          bravo: 'b'
-          charlie: 'c'
-          delta: 'd'
-          echo: 'e'
-          foxtrot: !only 'f'
-          golf: 'g'
-          hotel: 'h'
-        YAML
-        ast_2 = parse_yaml(<<-YAML)
-        en:
-          alfa: 'A'
-          bravo: 'B'
-          charlie: 'C'
-          golf: 'G'
-          hotel: 'H'
-        YAML
-        result = parse_yaml(<<-YAML)
-        es:
-          alfa: 'a'
-          bravo: 'b'
-          charlie: 'c'
-          foxtrot: !only 'f'
-          golf: 'g'
-          hotel: 'h'
-        YAML
-
-        formatted = format_ast(ast_1, ast_2)
-        expect(formatted.to_yaml).to eq(result.to_yaml)
-      end
-
-      it 'should delete extra elements in a sequence' do
-        ast_1 = parse_yaml(<<-YAML)
-        es:
-          foo:
-            - 'one'
-            - 'two'
-            - 'three'
-            - !only 'four'
-        YAML
-        ast_2 = parse_yaml(<<-YAML)
-        en:
-          foo:
-            - 'one'
-            - 'two'
-        YAML
-        result = parse_yaml(<<-YAML)
-        es:
-          foo:
-            - 'one'
-            - 'two'
-            - !only 'four'
-        YAML
-
-        formatted = format_ast(ast_1, ast_2)
+        formatted = format_ast(ast)
         expect(formatted.to_yaml).to eq(result.to_yaml)
       end
     end
