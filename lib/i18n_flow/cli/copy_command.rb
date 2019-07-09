@@ -2,7 +2,7 @@ require 'psych'
 require_relative 'command_base'
 require_relative '../util'
 require_relative '../parser'
-require_relative 'yaml_ast_proxy'
+require_relative '../yaml_ast_proxy'
 
 class I18nFlow::CLI
   class CopyCommand < CommandBase

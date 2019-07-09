@@ -1,22 +1,24 @@
 require_relative 'util'
 
 class I18nFlow::CLI
-  require_relative 'cli/lint_command'
-  require_relative 'cli/split_command'
   require_relative 'cli/copy_command'
-  require_relative 'cli/search_command'
-  require_relative 'cli/version_command'
+  require_relative 'cli/format_command'
   require_relative 'cli/help_command'
+  require_relative 'cli/lint_command'
   require_relative 'cli/read_config_command'
+  require_relative 'cli/search_command'
+  require_relative 'cli/split_command'
+  require_relative 'cli/version_command'
 
   COMMANDS = {
+    'copy'        => CopyCommand,
+    'format'      => FormatCommand,
+    'help'        => HelpCommand,
     'lint'        => LintCommand,
+    'read_config' => ReadConfigCommand,
     'search'      => SearchCommand,
     'split'       => SplitCommand,
-    'copy'        => CopyCommand,
     'version'     => VersionCommand,
-    'help'        => HelpCommand,
-    'read_config' => ReadConfigCommand,
   }
 
   attr_reader :args
