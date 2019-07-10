@@ -39,7 +39,7 @@ module I18nFlow::Validator
         return
       end
 
-      check_asymmetric_key(n1, n2, t2)&.tap do |err|
+      check_asymmetric_key(n1, n2, t2, key)&.tap do |err|
         errors << err if err
         return
       end
@@ -112,28 +112,35 @@ module I18nFlow::Validator
       InvalidTypeError.new(n2.full_key).set_location(n2)
     end
 
-    def check_asymmetric_key(n1, n2, t2)
+    def check_asymmetric_key(n1, n2, t2, key)
       return false if n1&.ignored_violation == :key || n2&.ignored_violation == :key
       return if n1 && n2
 
       if n1
         full_key = [t2.locale, *n1.scopes.drop(1)].join('.')
-        MissingKeyError.new(full_key).set_location(t2)
+        MissingKeyError.new(full_key)
+          .set_location(t2)
+          .set_correction_context(dest_node: t2, dest_key: key, src_node: n1)
       else
-        ExtraKeyError.new(n2.full_key).set_location(n2)
+        ExtraKeyError.new(n2.full_key)
+          .set_location(n2)
+          .set_correction_context(dest_node: t2, dest_key: key)
       end
     end
 
     def check_todo_tag(n1, n2)
-      return unless n2.marked_as_todo?
-
-      if !n2.scalar?
-        InvalidTodoError.new(n2.full_key).set_location(n2)
-      elsif n2.value != n1.value
-        TodoContentError.new(n2.full_key,
-          expect: n1.value,
-          actual: n2.value,
-        ).set_location(n2)
+      if n1.scalar? && n1.marked_as_todo? && !n2.marked_as_todo? && n2.value != n1.value
+        TodoContentError.new(n1.full_key, expect: n2.value, actual: n1.value, inverse: true)
+          .set_location(n1)
+          .set_correction_context(dest_node: n1, src_node: n2)
+      elsif n2.marked_as_todo?
+        if !n2.scalar?
+          InvalidTodoError.new(n2.full_key).set_location(n2)
+        elsif n2.value != n1.value
+          TodoContentError.new(n2.full_key, expect: n1.value, actual: n2.value, inverse: false)
+            .set_location(n2)
+            .set_correction_context(dest_node: n2, src_node: n1)
+        end
       end
     end
 

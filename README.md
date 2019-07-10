@@ -6,7 +6,7 @@ i18n_flow (beta)
 [![Build Status](https://travis-ci.org/creasty/i18n_flow.svg?branch=master)](https://travis-ci.org/creasty/i18n_flow)
 [![License](https://img.shields.io/github/license/creasty/i18n_flow.svg)](./LICENSE)
 
-**Manage translation status in YAML file.**  
+**Manage translation status in YAML file.**<br>
 With an official [tag](http://www.yaml.org/spec/1.2/spec.html#id2784064) feature, `i18n_flow` enables you to annotate status information directly in YAML file.
 
 ![](https://user-images.githubusercontent.com/1695538/36359417-6a976054-155e-11e8-914b-d6a10a8287fc.png)
@@ -23,6 +23,9 @@ Setup
 Add this line to your Gemfile:
 
 ```ruby
+gem 'i18n_flow'
+
+# To use the latest version:
 gem 'i18n_flow', github: 'creasty/i18n_flow'
 ```
 
@@ -61,6 +64,7 @@ Options:
 
 Commands:
     lint       Validate files
+    format     Format and correct errors
     search     Search contents and keys
     copy       Copy translations and mark as todo
     split      Split a file into proper-sized files

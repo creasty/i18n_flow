@@ -54,4 +54,40 @@ module I18nFlow::YamlAstProxy
     stream.children << doc
     create(stream)
   end
+
+  def self.mark_as_todo(ast)
+    if ast.alias?
+      return
+    end
+    if ast.scalar?
+      ast.node.tag = '!todo'
+
+      # https://github.com/ruby/psych/blob/f30b65befa4f0a5a8548d482424a84a2383b0284/ext/psych/yaml/emitter.c#L1187
+      ast.node.plain = ast.node.quoted = false
+
+      return
+    end
+
+    ast.each do |k, v|
+      mark_as_todo(v)
+    end
+  end
+
+  def self.first_key_node_of(node)
+    first_node_of(node, 0)
+  end
+
+  def self.first_value_node_of(node)
+    first_node_of(node, 1)
+  end
+
+private
+
+  def self.first_node_of(node, layout_offset)
+    node
+      .send(:indexed_object)
+      .node
+      .tap { |n| break unless n.is_a?(Psych::Nodes::Mapping) }
+      &.tap { |n| break n.children[layout_offset] }
+  end
 end

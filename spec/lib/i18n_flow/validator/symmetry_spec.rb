@@ -377,7 +377,7 @@ describe I18nFlow::Validator::Symmetry do
         ])
       end
 
-      it 'should fail if texts are different' do
+      it 'should fail if texts are different from the master' do
         ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
@@ -394,7 +394,28 @@ describe I18nFlow::Validator::Symmetry do
         validator.validate!
 
         expect(validator.errors).to eq([
-          I18nFlow::Validator::TodoContentError.new('ja.key_2', expect: 'text_2', actual: 'text_9'),
+          I18nFlow::Validator::TodoContentError.new('ja.key_2', expect: 'text_2', actual: 'text_9', inverse: false),
+        ])
+      end
+
+      it 'should fail if texts are different from the foreign' do
+        ast_1 = parse_yaml(<<-YAML)['en']
+        en:
+          key_1: text_1
+          key_2: !todo text_9
+        YAML
+        ast_2 = parse_yaml(<<-YAML)['ja']
+        ja:
+          key_1: text_1
+          key_2: text_2
+        YAML
+
+        allow(validator).to receive(:ast_1).and_return(ast_1)
+        allow(validator).to receive(:ast_2).and_return(ast_2)
+        validator.validate!
+
+        expect(validator.errors).to eq([
+          I18nFlow::Validator::TodoContentError.new('en.key_2', expect: 'text_2', actual: 'text_9', inverse: true),
         ])
       end
     end

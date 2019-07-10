@@ -36,16 +36,33 @@ module I18nFlow::Validator
   end
 
   class MissingKeyError < Error
+    attr_reader :dest_node
+    attr_reader :dest_key
+    attr_reader :src_node
+
     def initialize(key, single: false)
       super(key)
       @single = single
     end
+
+    def set_correction_context(dest_node:, dest_key:, src_node:)
+      @dest_node, @dest_key, @src_node = dest_node, dest_key, src_node
+      self
+    end
   end
 
   class ExtraKeyError < Error
+    attr_reader :dest_node
+    attr_reader :dest_key
+
     def initialize(key, single: false)
       super(key)
       @single = single
+    end
+
+    def set_correction_context(dest_node:, dest_key:)
+      @dest_node, @dest_key = dest_node, dest_key
+      self
     end
   end
 
@@ -55,15 +72,24 @@ module I18nFlow::Validator
   class TodoContentError < Error
     attr_reader :expect
     attr_reader :actual
+    attr_reader :dest_node
+    attr_reader :src_node
+    attr_reader :inverse
 
-    def initialize(key, expect:, actual:)
+    def initialize(key, expect:, actual:, inverse:)
       super(key)
       @expect = expect
       @actual = actual
+      @inverse = inverse
     end
 
     def data
       super + [expect, actual]
+    end
+
+    def set_correction_context(dest_node:, src_node:)
+      @dest_node, @src_node = dest_node, src_node
+      self
     end
   end
 

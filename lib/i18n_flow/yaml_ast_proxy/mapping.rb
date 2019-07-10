@@ -25,6 +25,12 @@ module I18nFlow::YamlAstProxy
     end
     alias []= set
 
+    def delete(key)
+      indexed_object.delete(key)
+      cache.delete(key)
+      synchronize!
+    end
+
     def batch
       @locked = true
       yield
@@ -47,6 +53,14 @@ module I18nFlow::YamlAstProxy
           end
         end
       end
+    end
+
+    def sort_keys!
+      @indexed_object = indexed_object
+        .sort_by { |k, v| [v.is_a?(Psych::Nodes::Mapping) ? 1 : 0, k] }
+        .to_h
+      @cache = nil
+      synchronize!
     end
 
   private
