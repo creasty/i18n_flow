@@ -83,12 +83,16 @@ module I18nFlow::YamlAstProxy
       node.children.replace(children)
     end
 
+    # -2  Default with anchor
+    # -1  Aliases
+    #  0  Default without anchor
+    #  0  Mappings with anchor
+    #  1  Mappings without anochor
     def sort_order(node)
       case node
       when Psych::Nodes::Alias then -1
-      when Psych::Nodes::Scalar then node.anchor ? 1 : 0
-      when Psych::Nodes::Mapping then node.anchor ? 1 : 2
-      else 0
+      when Psych::Nodes::Mapping then node.anchor ? 0 : 1
+      else node.anchor ? -2 : 0
       end
     end
   end
