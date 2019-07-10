@@ -90,4 +90,8 @@ private
       .tap { |n| break unless n.is_a?(Psych::Nodes::Mapping) }
       &.tap { |n| break n.children[layout_offset] }
   end
+
+  def self.scalar_scanner
+    @scalar_scanner ||= Psych::ScalarScanner.new(Psych::ClassLoader.new)
+  end
 end

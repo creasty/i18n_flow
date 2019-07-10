@@ -79,7 +79,7 @@ module I18nFlow::YamlAstProxy
     def synchronize!
       return if @locked
 
-      children = indexed_object.flat_map { |k, v| [Psych::Nodes::Scalar.new(k), v] }
+      children = indexed_object.flat_map { |k, v| [key_node(k), v] }
       node.children.replace(children)
     end
 
@@ -93,6 +93,15 @@ module I18nFlow::YamlAstProxy
       when Psych::Nodes::Alias then -1
       when Psych::Nodes::Mapping then node.anchor ? 0 : 1
       else node.anchor ? -2 : 0
+      end
+    end
+
+    def key_node(str)
+      needs_quote = !I18nFlow::YamlAstProxy.scalar_scanner.tokenize(str).is_a?(String)
+      if needs_quote
+        Psych::Nodes::Scalar.new(str, nil, nil, true, true, Psych::Nodes::Scalar::DOUBLE_QUOTED)
+      else
+        Psych::Nodes::Scalar.new(str, nil, nil, true, false, Psych::Nodes::Scalar::PLAIN)
       end
     end
   end

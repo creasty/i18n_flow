@@ -8,6 +8,28 @@ describe I18nFlow::Formatter do
   end
 
   describe '#format!' do
+    it 'should quote non-string keys' do
+      ast = parse_yaml(<<-YAML)
+      en:
+        1: alpha
+        1.2: bravo
+        foo: chalie
+        true: delta
+      YAML
+      result = parse_yaml(<<-YAML)
+      en:
+        "1": alpha
+        "1.2": bravo
+        foo: chalie
+        "true": delta
+      YAML
+
+      p ast
+
+      formatted = format_ast(ast)
+      expect(formatted.to_yaml).to eq(result.to_yaml)
+    end
+
     it 'should remove extra whitespaces' do
       ast = parse_yaml(<<-YAML)
       en:
