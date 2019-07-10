@@ -32,6 +32,8 @@ class I18nFlow::Corrector
         elsif error.dest_node.sequence?
           error.dest_node.delete_at(error.dest_key)
         end
+      when I18nFlow::Validator::TodoContentError
+        error.dest_node.node.value = error.src_node.node.value
       end
     end
   end
