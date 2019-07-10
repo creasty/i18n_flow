@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    i18n_flow (0.2.1)
+    i18n_flow (0.2.2)
       psych (>= 3.0)
 
 GEM
