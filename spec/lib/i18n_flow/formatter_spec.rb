@@ -95,7 +95,7 @@ describe I18nFlow::Formatter do
         expect(formatted.to_yaml).to eq(result.to_yaml)
       end
 
-      it 'should move mappings at the bottom' do
+      it 'should move mappings to the bottom' do
         ast = parse_yaml(<<-YAML)
         en:
           alfa: 'A'
@@ -127,6 +127,36 @@ describe I18nFlow::Formatter do
             foo: 'foo'
           hotel:
             baz: 'baz'
+        YAML
+
+        formatted = format_ast(ast)
+        expect(formatted.to_yaml).to eq(result.to_yaml)
+      end
+
+      it 'should move anchors before the mappings' do
+        ast = parse_yaml(<<-YAML)
+        en:
+          alfa: 'A'
+          xxx: &xxx
+            echo: 'E'
+            golf: 'G'
+          charlie:
+            <<: *xxx
+            a: 123
+          bravo: 'B'
+          delta: 'D'
+        YAML
+        result = parse_yaml(<<-YAML)
+        en:
+          alfa: 'A'
+          bravo: 'B'
+          delta: 'D'
+          xxx: &xxx
+            echo: 'E'
+            golf: 'G'
+          charlie:
+            <<: *xxx
+            a: 123
         YAML
 
         formatted = format_ast(ast)
