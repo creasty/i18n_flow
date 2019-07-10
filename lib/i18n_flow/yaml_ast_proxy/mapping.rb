@@ -57,7 +57,7 @@ module I18nFlow::YamlAstProxy
 
     def sort_keys!
       @indexed_object = indexed_object
-        .sort_by { |k, v| [v.is_a?(Psych::Nodes::Mapping) ? 1 : 0, k] }
+        .sort_by { |k, v| [sort_order(v), k] }
         .to_h
       @cache = nil
       synchronize!
@@ -81,6 +81,15 @@ module I18nFlow::YamlAstProxy
 
       children = indexed_object.flat_map { |k, v| [Psych::Nodes::Scalar.new(k), v] }
       node.children.replace(children)
+    end
+
+    def sort_order(node)
+      case node
+      when Psych::Nodes::Alias then -1
+      when Psych::Nodes::Scalar then node.anchor ? 1 : 0
+      when Psych::Nodes::Mapping then node.anchor ? 1 : 2
+      else 0
+      end
     end
   end
 end
