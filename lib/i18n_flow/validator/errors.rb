@@ -72,15 +72,24 @@ module I18nFlow::Validator
   class TodoContentError < Error
     attr_reader :expect
     attr_reader :actual
+    attr_reader :dest_node
+    attr_reader :src_node
+    attr_reader :inverse
 
-    def initialize(key, expect:, actual:)
+    def initialize(key, expect:, actual:, inverse:)
       super(key)
       @expect = expect
       @actual = actual
+      @inverse = inverse
     end
 
     def data
       super + [expect, actual]
+    end
+
+    def set_correction_context(dest_node:, src_node:)
+      @dest_node, @src_node = dest_node, src_node
+      self
     end
   end
 

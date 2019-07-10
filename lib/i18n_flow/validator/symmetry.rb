@@ -129,15 +129,18 @@ module I18nFlow::Validator
     end
 
     def check_todo_tag(n1, n2)
-      return unless n2.marked_as_todo?
-
-      if !n2.scalar?
-        InvalidTodoError.new(n2.full_key).set_location(n2)
-      elsif n2.value != n1.value
-        TodoContentError.new(n2.full_key,
-          expect: n1.value,
-          actual: n2.value,
-        ).set_location(n2)
+      if n1.scalar? && n1.marked_as_todo? && !n2.marked_as_todo? && n2.value != n1.value
+        TodoContentError.new(n1.full_key, expect: n2.value, actual: n1.value, inverse: true)
+          .set_location(n1)
+          .set_correction_context(dest_node: n1, src_node: n2)
+      elsif n2.marked_as_todo?
+        if !n2.scalar?
+          InvalidTodoError.new(n2.full_key).set_location(n2)
+        elsif n2.value != n1.value
+          TodoContentError.new(n2.full_key, expect: n1.value, actual: n2.value, inverse: false)
+            .set_location(n2)
+            .set_correction_context(dest_node: n2, src_node: n1)
+        end
       end
     end
 
