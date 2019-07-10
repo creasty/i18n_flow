@@ -27,9 +27,15 @@
     <%- when I18nFlow::Validator::InvalidTodoError -%>
         Todo cannot be annotated on a mapping/sequence
     <%- when I18nFlow::Validator::TodoContentError -%>
+      <%- if err.inverse -%>
+        It has "!todo" but the content diverges from the foreign file
+        foreign: <%= err.expect %>
+        master:  <%= err.actual %>
+      <%- else -%>
         It has "!todo" but the content diverges from the master file
         master:  <%= err.expect %>
         foreign: <%= err.actual %>
+      <%- end -%>
     <%- when I18nFlow::Validator::InvalidLocaleError -%>
         It has "!only" but the locale is invalid
         valid: [<%= err.expect.join(', ') %>]
