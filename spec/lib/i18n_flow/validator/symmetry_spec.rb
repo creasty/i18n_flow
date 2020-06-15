@@ -252,12 +252,12 @@ describe I18nFlow::Validator::Symmetry do
         ast_1 = parse_yaml(<<-YAML)['en']
         en:
           key_1: text_1
-          key_2: !only:en,ja text_2
+          key_2: !<!only:en,ja> text_2
         YAML
         ast_2 = parse_yaml(<<-YAML)['ja']
         ja:
           key_1: text_1
-          key_2: !only:en,ja text_2
+          key_2: !<!only:en,ja> text_2
         YAML
 
         allow(validator).to receive(:ast_1).and_return(ast_1)

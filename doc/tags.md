@@ -172,7 +172,7 @@ Linter won't complain about `ja.desc`
 -------------
 
 It's similar to `!only`, but is stricter.  
-It can take comma-separated locales as a parameter just like `!only:en` or `!only:en,ja,zh-HK`, and ensures that a key only exists in files of the specified locales.
+It can take comma-separated locales as a parameter just like `!only:en` or `!<!only:en,ja,zh-HK>`, and ensures that a key only exists in files of the specified locales.
 
 <table><thead><tr>
   <th></th>
@@ -235,7 +235,7 @@ Linter will complain about `en.desc`, because the key is supposed to exist only 
 ```yaml
 en:
   title: 'Non zero sum'
-  desc: !only:en,ja 'A situation in...'
+  desc: !<!only:en,ja> 'A situation in...'
 ```
 
 </td><td>
@@ -261,7 +261,7 @@ The key can exist in the specified locales `en,ja`
 ```yaml
 en:
   title: 'Non zero sum'
-  desc: !only:en,ja 'A situation in...'
+  desc: !<!only:en,ja> 'A situation in...'
 ```
 
 </td><td>
